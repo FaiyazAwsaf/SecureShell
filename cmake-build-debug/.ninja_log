@@ -1,6 +1,0 @@
-# ninja log v6
-2	304	7499236405883210	CMakeFiles/SecureShell.dir/encryptionLib/SimpleEncryptLib.cpp.obj	689cad33c3685614
-10	309	7499236405958273	CMakeFiles/SecureShell.dir/PasswordManager.cpp.obj	876c4580f89f21bd
-6	314	7499236405923219	CMakeFiles/SecureShell.dir/encryptionLib/tempCodeRunnerFile.cpp.obj	802b851a2724ab25
-2	229	7499236600211356	build.ninja	9708b323421133fa
-19	104	7499236600903239	SecureShell.exe	aeb89f9ef7239e52
