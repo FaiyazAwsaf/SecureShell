@@ -8,7 +8,7 @@ using namespace std;
 void addAccount() {
     string website, username, password;
     int passwordOption;
-sss
+
     cout << "Enter website: ";
     cin >> website;
     cout << "Enter username: ";
