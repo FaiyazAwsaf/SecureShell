@@ -11,6 +11,7 @@ private:
 public:
     CaesarCipher(int shift) : shift(shift) {}
 
+
     std::string encrypt(const std::string &data) const override {
         std::string result = data;
         for (char &c : result) {
