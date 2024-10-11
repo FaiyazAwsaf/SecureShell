@@ -1,39 +1,41 @@
-// PasswordManager.cpp
 #include "PasswordManager.h"
+#include "FileHandler.h"
+#include "GenerateRandomPassword.h"
 #include <iostream>
-#include <cstdlib>  // for rand()
-#include <ctime>    // for time()
 
-PasswordManager::PasswordManager(std::unique_ptr<ICryptography> crypto, const std::string &masterPassword)
-    : cryptography(std::move(crypto)) {
-    masterPasswordHash = cryptography->hash(masterPassword); // Hashing master password
+// Constructor implementation
+PasswordManager::PasswordManager(std::unique_ptr<ICryptography> crypto, std::unique_ptr<IFileHandler> fileHandler)
+    : crypto(std::move(crypto)), fileHandler(std::move(fileHandler)) {}
+
+// Login method
+bool PasswordManager::login(const std::string& masterPassword) {
+    // Check against the stored master password
+    std::string encryptedMasterPassword = fileHandler->loadMasterPassword();
+    return (crypto->decrypt(encryptedMasterPassword) == masterPassword);
 }
 
-// Login by hashing the entered password and comparing with the stored hash
-bool PasswordManager::login(const std::string &password) {
-    return masterPasswordHash == cryptography->hash(password);
+// Add an account
+void PasswordManager::addAccount(const std::string& username, const std::string& password) {
+    std::string encryptedPassword = crypto->encrypt(password);
+    fileHandler->saveAccount(username, encryptedPassword);
 }
 
-// Add an account (password is encrypted before storage)
-void PasswordManager::addAccount(const std::string &username, const std::string &password) {
-    std::string encryptedPassword = cryptography->encrypt(password);
-    accounts.push_back({username, encryptedPassword});
-}
+// List all accounts
+void PasswordManager::listAccounts() {
+    auto accounts = fileHandler->loadAccounts();
 
-// List all accounts (decrypt passwords before displaying)
-void PasswordManager::listAccounts() const {
-    for (const auto &account : accounts) {
-        std::string decryptedPassword = cryptography->decrypt(account.password);
-        std::cout << "Username: " << account.username << ", Password: " << decryptedPassword << std::endl;
+    if (accounts.empty()) {
+        std::cout << "No accounts found." << std::endl;
+        return;
+    }
+
+    std::cout << "Stored Accounts:" << std::endl;
+    for (const auto& account : accounts) {
+        std::cout << "Username: " << account.first << ", Password: " << crypto->decrypt(account.second) << std::endl;
     }
 }
 
 // Generate a random password
-std::string PasswordManager::generateRandomPassword(int length) {
-    std::string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    std::string password;
-    for (int i = 0; i < length; ++i) {
-        password += characters[rand() % characters.length()];
-    }
-    return password;
+std::string PasswordManager::generateRandomPassword(size_t length) {
+    return Utils::generateRandomPassword(length); // Assuming you have this function in Utils
 }

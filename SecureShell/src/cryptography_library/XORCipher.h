@@ -2,7 +2,6 @@
 #ifndef XOR_CIPHER_H
 #define XOR_CIPHER_H
 
-#include <iostream>
 #include "ICryptography.h"
 
 class XORCipher : public ICryptography {

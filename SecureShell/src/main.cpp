@@ -1,31 +1,49 @@
 #include "password_manager/PasswordManager.h"
-#include "cryptography_library/CaesarCipher.h"
-#include "cryptography_library/XORCipher.h"
+#include "cryptography_library//CaesarCipher.h"
+#include "utils/FileHandler.h"
 #include <iostream>
 #include <ctime>
-#include <memory> // for std::unique_ptr
+#include <memory>
 
 int main() {
     srand(static_cast<unsigned>(time(0))); // Initialize random seed
 
-    std::string masterPassword;
-    std::cout << "Set master password for your password manager: ";
-    std::getline(std::cin, masterPassword);
+    std::string masterPasswordFile = "master_password.txt";
+    std::string accountsFile = "accounts.txt";
 
-    // Use CaesarCipher for encryption (can easily swap this with XORCipher or any other)
+    // Create file handler and crypto system
     std::unique_ptr<ICryptography> crypto = std::make_unique<CaesarCipher>(3);
-    PasswordManager passwordManager(std::move(crypto), masterPassword);
+    std::unique_ptr<IFileHandler> fileHandler = std::make_unique<FileHandler>(masterPasswordFile, accountsFile);
 
-    std::string inputPassword;
-    std::cout << "Enter master password to login: ";
-    std::getline(std::cin, inputPassword);
+    // Check if master password exists
+    std::string encryptedMasterPassword = fileHandler->loadMasterPassword();
+    std::string masterPassword;
 
-    if (!passwordManager.login(inputPassword)) {
-        std::cout << "Incorrect master password. Exiting..." << std::endl;
-        return 1;
+    if (encryptedMasterPassword.empty()) {
+        // First-time setup for master password
+        std::cout << "Set master password for your password manager: ";
+        std::getline(std::cin, masterPassword);
+
+        // Encrypt and save the master password
+        encryptedMasterPassword = crypto->encrypt(masterPassword);
+        fileHandler->saveMasterPassword(encryptedMasterPassword);
+        std::cout << "Master password saved successfully!" << std::endl;
+    } else {
+        // Prompt for master password to login
+        std::cout << "Enter master password to login: ";
+        std::getline(std::cin, masterPassword);
+
+        // Verify the master password
+        if (crypto->decrypt(encryptedMasterPassword) != masterPassword) {
+            std::cout << "Incorrect master password. Exiting..." << std::endl;
+            return 1;
+        }
     }
 
     std::cout << "Login successful!" << std::endl;
+
+    // Initialize the password manager
+    PasswordManager passwordManager(std::move(crypto), std::move(fileHandler));
 
     bool running = true;
     while (running) {
