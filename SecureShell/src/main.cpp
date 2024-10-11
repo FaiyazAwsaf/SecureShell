@@ -1,6 +1,6 @@
-#include "password_manager/PasswordManager.h"
-#include "cryptography_library//CaesarCipher.h"
-#include "utils/FileHandler.h"
+#include "PasswordManager.h"
+#include "CaesarCipher.h"
+#include "FileHandler.h"
 #include <iostream>
 #include <ctime>
 #include <memory>
@@ -8,46 +8,25 @@
 int main() {
     srand(static_cast<unsigned>(time(0))); // Initialize random seed
 
-    std::string masterPasswordFile = "master_password.txt";
-    std::string accountsFile = "accounts.txt";
-
-    // Create file handler and crypto system
     std::unique_ptr<ICryptography> crypto = std::make_unique<CaesarCipher>(3);
-    std::unique_ptr<IFileHandler> fileHandler = std::make_unique<FileHandler>(masterPasswordFile, accountsFile);
+    std::unique_ptr<IFileHandler> fileHandler = std::make_unique<FileHandler>("master_password.txt", "accounts.txt");
 
-    // Check if master password exists
-    std::string encryptedMasterPassword = fileHandler->loadMasterPassword();
-    std::string masterPassword;
+    PasswordManager passwordManager(std::move(crypto), std::move(fileHandler));
 
-    if (encryptedMasterPassword.empty()) {
-        // First-time setup for master password
-        std::cout << "Set master password for your password manager: ";
-        std::getline(std::cin, masterPassword);
+    std::string inputPassword;
+    std::cout << "Enter master password to login: ";
+    std::getline(std::cin, inputPassword);
 
-        // Encrypt and save the master password
-        encryptedMasterPassword = crypto->encrypt(masterPassword);
-        fileHandler->saveMasterPassword(encryptedMasterPassword);
-        std::cout << "Master password saved successfully!" << std::endl;
-    } else {
-        // Prompt for master password to login
-        std::cout << "Enter master password to login: ";
-        std::getline(std::cin, masterPassword);
-
-        // Verify the master password
-        if (crypto->decrypt(encryptedMasterPassword) != masterPassword) {
-            std::cout << "Incorrect master password. Exiting..." << std::endl;
-            return 1;
-        }
+    if (!passwordManager.login(inputPassword)) {
+        std::cout << "Incorrect master password. Exiting..." << std::endl;
+        return 1;
     }
 
     std::cout << "Login successful!" << std::endl;
 
-    // Initialize the password manager
-    PasswordManager passwordManager(std::move(crypto), std::move(fileHandler));
-
     bool running = true;
     while (running) {
-        std::cout << "\n1. Add Account\n2. List Accounts\n3. Exit\nChoose an option: ";
+        std::cout << "\n1. Add Account\n2. List Accounts\n3. Edit Account\n4. Exit\nChoose an option: ";
         int option;
         std::cin >> option;
         std::cin.ignore();  // Ignore newline after input
@@ -77,7 +56,23 @@ int main() {
             case 2:
                 passwordManager.listAccounts();
                 break;
-            case 3:
+            case 3: {
+                std::string oldUsername, newUsername, newPassword;
+                std::cout << "Enter the username of the account to edit: ";
+                std::getline(std::cin, oldUsername);
+                std::cout << "Enter new username: ";
+                std::getline(std::cin, newUsername);
+                std::cout << "Enter new password: ";
+                std::getline(std::cin, newPassword);
+
+                if (passwordManager.editAccount(oldUsername, newUsername, newPassword)) {
+                    std::cout << "Account updated successfully!" << std::endl;
+                } else {
+                    std::cout << "Account not found." << std::endl;
+                }
+                break;
+            }
+            case 4:
                 running = false;
                 break;
             default:

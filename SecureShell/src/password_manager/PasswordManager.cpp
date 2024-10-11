@@ -35,6 +35,30 @@ void PasswordManager::listAccounts() {
     }
 }
 
+bool PasswordManager::editAccount(const std::string& oldUsername, const std::string& newUsername, const std::string& newPassword) {
+    auto accounts = fileHandler->loadAccounts();
+    bool accountFound = false;
+
+    for (auto& account : accounts) {
+        if (account.first == oldUsername) {
+            // Update username and password
+            account.first = newUsername;
+            account.second = crypto->encrypt(newPassword);
+            accountFound = true;
+            break;
+        }
+    }
+
+    if (accountFound) {
+        // Save the updated accounts back to the file
+        fileHandler->saveUpdatedAccounts(accounts);
+        return true;
+    } else {
+        std::cout << "Account with username '" << oldUsername << "' not found." << std::endl;
+        return false;
+    }
+}
+
 // Generate a random password
 std::string PasswordManager::generateRandomPassword(size_t length) {
     return Utils::generateRandomPassword(length); // Assuming you have this function in Utils

@@ -9,7 +9,7 @@
 
 struct Account {
     std::string username;
-    std::string password;
+    std::string password; // stored encrypted
 };
 
 class PasswordManager {
@@ -20,6 +20,7 @@ public:
     void addAccount(const std::string& username, const std::string& password);
     void listAccounts();
     std::string generateRandomPassword(size_t length);
+    bool editAccount(const std::string& oldUsername, const std::string& newUsername, const std::string& newPassword); // New function to edit accounts
 
 private:
     std::unique_ptr<ICryptography> crypto;
