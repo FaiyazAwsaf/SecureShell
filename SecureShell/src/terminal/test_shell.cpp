@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include "dynamicstack.h"
 
+
 using namespace std;
 namespace fs = filesystem;
 
@@ -14,14 +15,18 @@ class CommandHandler{
 
 };
 
+class PasswordManagerCommand : public CommandHandler{
+    void execute_command(const fs::path& path1, const fs::path& path2) override{
+        
+    }
+};
+
 class GppCompileCommand : public CommandHandler{
 
 };
 
 class CompileCommand : public GppCompileCommand{
     void execute_command(const fs::path& path1, const fs::path& path2) override{
-
-
 
         string source = path1.string();
         string dest = path2.string();
@@ -91,7 +96,7 @@ class MoveCommand : public FileSystemCommand {
 class RenameCommand : public FileSystemCommand {
     void execute_command(const fs::path& path1, const fs::path& path2) override{
         try{
-            fs::copy(path1, path2, fs::copy_options::overwrite_existing);
+            fs::rename(path1, path2);
         }
         catch(const fs::filesystem_error& e){
             cerr<<"Error copying the file : "<<e.what()<<endl;
@@ -260,6 +265,7 @@ class CommandProcessor{
                 register_command("--help", new HelpCommand());
                 register_command("-h", new HelpCommand());
                 register_command("exit", new ExitCommand());
+                register_command("passman", new PasswordManagerCommand());
         }
 
                 
