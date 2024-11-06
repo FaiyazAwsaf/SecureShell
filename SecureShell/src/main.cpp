@@ -9,9 +9,12 @@ int main() {
     srand(static_cast<unsigned>(time(0))); // Initialize random seed
 
     std::unique_ptr<ICryptography> crypto = std::make_unique<CaesarCipher>(3);
-    std::unique_ptr<IFileHandler> fileHandler = std::make_unique<FileHandler>("master_password.txt", "accounts.txt");
+    std::unique_ptr<IFileHandler> fileHandler = std::make_unique<FileHandler>("D:/IUT UG/3rd Sem/Labs/SPL 1/SecureShell/Data/master_password.txt", "D:/IUT UG/3rd Sem/Labs/SPL 1/SecureShell/Data/accounts.txt");
 
     PasswordManager passwordManager(std::move(crypto), std::move(fileHandler));
+
+    // Initialize or check for master password
+    passwordManager.initializeMasterPassword();
 
     std::string inputPassword;
     std::cout << "Enter master password to login: ";
@@ -24,6 +27,7 @@ int main() {
 
     std::cout << "Login successful!" << std::endl;
 
+    // Main loop for managing accounts
     bool running = true;
     while (running) {
         std::cout << "\n1. Add Account\n2. List Accounts\n3. Edit Account\n4. Exit\nChoose an option: ";
@@ -33,11 +37,16 @@ int main() {
 
         switch (option) {
             case 1: {
-                std::string username, password;
+                std::string accountName, username, password;
+
+                // Prompt for account name (e.g., website or application name)
+                std::cout << "Enter the name of the website: ";
+                std::getline(std::cin, accountName);
+
                 std::cout << "Enter username: ";
                 std::getline(std::cin, username);
 
-                std::cout << "Do you want to generate a random password? (yes/no): ";
+                std::cout << "Do you want to generate a random password? (yes / no): ";
                 std::string choice;
                 std::getline(std::cin, choice);
 
@@ -49,7 +58,8 @@ int main() {
                     std::getline(std::cin, password);
                 }
 
-                passwordManager.addAccount(username, password);
+                // Add account with website/account name, username, and password
+                passwordManager.addAccount(accountName, username, password);
                 std::cout << "Account added!" << std::endl;
                 break;
             }
@@ -57,15 +67,18 @@ int main() {
                 passwordManager.listAccounts();
                 break;
             case 3: {
-                std::string oldUsername, newUsername, newPassword;
-                std::cout << "Enter the username of the account to edit: ";
-                std::getline(std::cin, oldUsername);
+                std::string oldAccountName, newAccountName, newUsername, newPassword;
+
+                std::cout << "Enter the name of the website/account to edit: ";
+                std::getline(std::cin, oldAccountName);
+                std::cout << "Enter new account name: ";
+                std::getline(std::cin, newAccountName);
                 std::cout << "Enter new username: ";
                 std::getline(std::cin, newUsername);
                 std::cout << "Enter new password: ";
                 std::getline(std::cin, newPassword);
 
-                if (passwordManager.editAccount(oldUsername, newUsername, newPassword)) {
+                if (passwordManager.editAccount(oldAccountName, newAccountName, newUsername, newPassword)) {
                     std::cout << "Account updated successfully!" << std::endl;
                 } else {
                     std::cout << "Account not found." << std::endl;
