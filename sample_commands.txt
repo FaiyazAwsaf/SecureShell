@@ -1,0 +1,22 @@
+# Sample Terminal Commands
+
+# Set background color to DarkBlue
+set background_color=DarkBlue
+
+# Change compiler to clang++
+set compiler=clang++
+
+# Disable auto-execute feature
+set auto_execute=false
+
+# Change password storage method
+set password_storage=hashed
+
+# Note: Each command uses the format:
+# set [setting_name]=[value]
+#
+# Available settings:
+# - background_color: Dark, Bright, DarkBlue, DarkGreen, DarkRed
+# - compiler: any valid compiler path/name
+# - auto_execute: true/false
+# - password_storage: encrypted/hashed
