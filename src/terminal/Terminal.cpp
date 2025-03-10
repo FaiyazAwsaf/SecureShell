@@ -105,6 +105,12 @@ void Terminal::initializeCommands() {
                 return;
             }
         } else {
+            // Load the master password hash and salt before authentication
+            if (masterPasswordExists && !initialized) {
+                passwordManager.load();
+                initialized = true;
+            }
+            
             std::cout << "Enter master password: ";
             std::string masterPassword;
             std::getline(std::cin, masterPassword);

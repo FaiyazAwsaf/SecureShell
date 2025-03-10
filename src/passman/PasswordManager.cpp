@@ -154,4 +154,8 @@ bool PasswordManager::hasMasterPassword() const {
     return storage.loadMasterPassword(tempHash, tempSalt);
 }
 
+bool PasswordManager::load() {
+    return loadPasswords();
+}
+
 } // namespace passman

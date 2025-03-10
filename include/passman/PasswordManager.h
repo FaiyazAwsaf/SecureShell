@@ -37,6 +37,12 @@ public:
      */
     bool hasMasterPassword() const;
 
+    /**
+     * @brief Loads the password data from storage
+     * @return True if loading was successful, false otherwise
+     */
+    bool load();
+
 private:
     /**
      * @brief Verifies if the input password matches the master password
