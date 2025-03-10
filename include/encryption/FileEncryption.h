@@ -10,8 +10,8 @@ public:
     FileEncryption();
     ~FileEncryption() = default;
 
-    bool encryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password);
-    bool decryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password);
+    bool encryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password) const;
+    bool decryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password) const;
     bool isFileEncrypted(const std::string& filename) const;
 
 private:

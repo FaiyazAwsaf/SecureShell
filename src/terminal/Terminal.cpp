@@ -1,5 +1,6 @@
 #include "terminal/Terminal.h"
 #include "utils/Utils.h"
+#include "passman/PasswordManager.h"
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
@@ -77,6 +78,169 @@ void Terminal::initializeCommands() {
             return;
         }
         compileAndRun(args[0]);
+    });
+    commandParser->registerCommand("passman", [this](const auto& args) {
+        static passman::PasswordManager passwordManager;
+        static bool initialized = false;
+        
+        // Check if master password file exists
+        bool masterPasswordExists = passwordManager.hasMasterPassword();
+        
+        if (!masterPasswordExists && !initialized) {
+            std::cout << "Password Manager - First Time Setup\n";
+            std::cout << "Please create a master password: ";
+            std::string masterPassword;
+            std::getline(std::cin, masterPassword);
+            
+            if (masterPassword.empty()) {
+                std::cout << "Master password cannot be empty.\n";
+                return;
+            }
+            
+            if (passwordManager.initialize(masterPassword)) {
+                std::cout << "Password Manager initialized successfully.\n";
+                initialized = true;
+            } else {
+                std::cout << "Failed to initialize Password Manager.\n";
+                return;
+            }
+        } else {
+            std::cout << "Enter master password: ";
+            std::string masterPassword;
+            std::getline(std::cin, masterPassword);
+            
+            if (!passwordManager.authenticate(masterPassword)) {
+                std::cout << "Authentication failed. Incorrect master password.\n";
+                return;
+            }
+            
+            std::cout << "Authentication successful.\n";
+        }
+        
+        // Password manager command loop
+        bool running = true;
+        while (running) {
+            std::cout << "\nPassword Manager Commands:\n";
+            std::cout << "1. Add password\n";
+            std::cout << "2. Get password\n";
+            std::cout << "3. List services\n";
+            std::cout << "4. Remove password\n";
+            std::cout << "5. Update password\n";
+            std::cout << "6. Generate password\n";
+            std::cout << "7. Change master password\n";
+            std::cout << "8. Exit password manager\n";
+            std::cout << "Enter choice: ";
+            
+            std::string choice;
+            std::getline(std::cin, choice);
+            
+            if (choice == "1") { // Add password
+                std::string service, username, password;
+                std::cout << "Enter service name: ";
+                std::getline(std::cin, service);
+                std::cout << "Enter username: ";
+                std::getline(std::cin, username);
+                std::cout << "Enter password (or leave empty to generate): ";
+                std::getline(std::cin, password);
+                
+                if (password.empty()) {
+                    password = passwordManager.generatePassword();
+                    std::cout << "Generated password: " << password << "\n";
+                }
+                
+                if (passwordManager.addEntry(service, username, password)) {
+                    std::cout << "Password added successfully.\n";
+                } else {
+                    std::cout << "Failed to add password.\n";
+                }
+            } else if (choice == "2") { // Get password
+                std::string service;
+                std::cout << "Enter service name: ";
+                std::getline(std::cin, service);
+                
+                auto entry = passwordManager.getEntry(service);
+                if (entry.service.empty()) {
+                    std::cout << "Service not found.\n";
+                } else {
+                    std::cout << "Service: " << entry.service << "\n";
+                    std::cout << "Username: " << entry.username << "\n";
+                    // Display the actual password instead of a message about hash
+                    std::cout << "Password: " << passwordManager.getPassword(service) << "\n";
+                }
+            } else if (choice == "3") { // List services
+                auto services = passwordManager.listServices();
+                if (services.empty()) {
+                    std::cout << "No services stored.\n";
+                } else {
+                    std::cout << "Stored services:\n";
+                    for (const auto& service : services) {
+                        std::cout << "- " << service << "\n";
+                    }
+                }
+            } else if (choice == "4") { // Remove password
+                std::string service;
+                std::cout << "Enter service name to remove: ";
+                std::getline(std::cin, service);
+                
+                if (passwordManager.removeEntry(service)) {
+                    std::cout << "Password removed successfully.\n";
+                } else {
+                    std::cout << "Failed to remove password. Service not found.\n";
+                }
+            } else if (choice == "5") { // Update password
+                std::string service, username, password;
+                std::cout << "Enter service name: ";
+                std::getline(std::cin, service);
+                std::cout << "Enter new username: ";
+                std::getline(std::cin, username);
+                std::cout << "Enter new password (or leave empty to generate): ";
+                std::getline(std::cin, password);
+                
+                if (password.empty()) {
+                    password = passwordManager.generatePassword();
+                    std::cout << "Generated password: " << password << "\n";
+                }
+                
+                if (passwordManager.updateEntry(service, username, password)) {
+                    std::cout << "Password updated successfully.\n";
+                } else {
+                    std::cout << "Failed to update password. Service not found.\n";
+                }
+            } else if (choice == "6") { // Generate password
+                std::string lengthStr;
+                std::cout << "Enter password length (default 16): ";
+                std::getline(std::cin, lengthStr);
+                
+                size_t length = 16;
+                if (!lengthStr.empty()) {
+                    try {
+                        length = std::stoul(lengthStr);
+                    } catch (...) {
+                        std::cout << "Invalid length, using default (16).\n";
+                    }
+                }
+                
+                std::string password = passwordManager.generatePassword(length);
+                std::cout << "Generated password: " << password << "\n";
+            } else if (choice == "7") { // Change master password
+                std::string oldPassword, newPassword;
+                std::cout << "Enter current master password: ";
+                std::getline(std::cin, oldPassword);
+                std::cout << "Enter new master password: ";
+                std::getline(std::cin, newPassword);
+                
+                if (passwordManager.changeMasterPassword(oldPassword, newPassword)) {
+                    std::cout << "Master password changed successfully.\n";
+                } else {
+                    std::cout << "Failed to change master password. Incorrect current password.\n";
+                }
+            } else if (choice == "8") { // Exit
+                running = false;
+                std::cout << "Exiting password manager.\n";
+            } else {
+                std::cout << "Invalid choice. Please try again.\n";
+            }
+        }
     });
     // Add more commands here...
 }

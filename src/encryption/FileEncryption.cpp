@@ -89,7 +89,7 @@ bool FileEncryption::isFileEncrypted(const std::string& filename) const {
     return marker == ENCRYPTION_MARKER;
 }
 
-bool FileEncryption::encryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password) {
+bool FileEncryption::encryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password) const {
     try {
         std::vector<uint8_t> data;
         if (!readFile(inputFile, data)) {
@@ -115,7 +115,7 @@ bool FileEncryption::encryptFile(const std::string& inputFile, const std::string
     }
 }
 
-bool FileEncryption::decryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password) {
+bool FileEncryption::decryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password) const {
     try {
         std::vector<uint8_t> data;
         if (!readFile(inputFile, data)) {

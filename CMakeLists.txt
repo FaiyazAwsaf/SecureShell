@@ -11,10 +11,11 @@ add_executable(SecureShell
     src/terminal/Terminal.cpp
     src/terminal/CommandParser.cpp
     src/passman/PasswordManager.cpp
+    src/passman/PasswordStorage.cpp
+    src/passman/PasswordCrypto.cpp
     src/encryption/FileEncryption.cpp
     src/config/ConfigManager.cpp
     src/utils/Utils.cpp
-        src/main.cpp
 )
 
 # Include directories
