@@ -7,15 +7,17 @@
 
 Terminal::Terminal()
     : running(false),
-      commandParser(std::make_unique<CommandParser>()),
-      configManager(std::make_unique<ConfigManager>()) {
+      commandParser(std::make_unique<CommandParser>()) {
     initializeCommands();
-    configManager->loadConfig();
 }
 
 void Terminal::start() {
     running = true;
+    
+    // Display welcome message
     std::cout << "-------------Welcome to SecureShell Terminal!-------------\n\n";
+    
+    // Display help hint
     std::cout << "Type 'help' for a list of available commands.\n\n";
 
     while (running) {
@@ -56,6 +58,7 @@ void Terminal::processCommand(const std::string& input) {
 void Terminal::initializeCommands() {
     commandParser->registerCommand("help", [this](const auto& args) { displayHelp(); });
     commandParser->registerCommand("exit", [this](const auto& args) { stop(); });
+    // Theme command removed
     commandParser->registerCommand("cd", [this](const auto& args) {
         if (args.empty()) {
             std::cout << "Usage: cd <directory>\n";
@@ -264,8 +267,8 @@ void Terminal::executeCommand(const std::string& command, const std::vector<std:
 
 void Terminal::compileAndRun(const std::string& filename) {
     std::string ext = Utils::getFileExtension(filename);
-    std::string compiler = configManager->getDefaultCompiler();
-    bool autoExecute = configManager->getAutoExecute();
+    std::string compiler = "g++"; // Default compiler
+    bool autoExecute = true; // Default to auto-execute
 
     // Add compilation logic here based on file extension
     // This is a simplified example
@@ -287,6 +290,7 @@ void Terminal::compileAndRun(const std::string& filename) {
 
 void Terminal::displayHelp() const {
     std::cout << "Available commands:\n";
+    
     auto commands = commandParser->getCommandList();
     for (const auto& [cmd, desc] : commands) {
         std::cout << cmd << "\t" << desc << "\n";

@@ -4,7 +4,6 @@
 #include <memory>
 #include <unordered_map>
 #include "CommandParser.h"
-#include "../config/ConfigManager.h"
 
 class Terminal {
 public:
@@ -14,6 +13,8 @@ public:
     void start();
     void stop();
     bool isRunning() const;
+    
+
 
 private:
     void processCommand(const std::string& input);
@@ -23,8 +24,8 @@ private:
     void compileAndRun(const std::string& filename);
     void displayHelp() const;
 
+
     bool running;
     std::unique_ptr<CommandParser> commandParser;
-    std::unique_ptr<ConfigManager> configManager;
     std::unordered_map<std::string, std::string> aliases;
 };

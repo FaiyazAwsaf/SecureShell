@@ -9,7 +9,13 @@ CommandParser::CommandParser() {
 }
 
 void CommandParser::registerCommand(const std::string& command, CommandFunction handler) {
+    // Ensure the command is registered regardless of whether it's in commandDescriptions
     commands[command] = handler;
+    
+    // If this command isn't in our descriptions, add it with an empty description
+    if (commandDescriptions.find(command) == commandDescriptions.end()) {
+        commandDescriptions[command] = "";
+    }
 }
 
 bool CommandParser::executeCommand(const std::string& command, const std::vector<std::string>& args) {
@@ -79,9 +85,14 @@ void CommandParser::initializeDefaultCommands() {
         {"encrypt", "Encrypt a file with a password"},
         {"decrypt", "Decrypt a file with a password"},
         {"passman", "Access the password manager"},
-        {"alias", "Create or list command aliases"},
-        {"config", "View or modify terminal configuration"}
+        {"alias", "Create or list command aliases"}
     };
+    
+    // Note: These are placeholder empty handlers.
+    // The actual implementations will be registered by Terminal class.
+    for (const auto& [cmd, _] : commandDescriptions) {
+        commands[cmd] = [](const std::vector<std::string>&) {};
+    }
 }
 
 std::vector<std::string> CommandParser::splitString(const std::string& input, char delimiter) const {
