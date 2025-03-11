@@ -15,8 +15,8 @@ Terminal::Terminal()
 
 void Terminal::start() {
     running = true;
-    std::cout << "Welcome to SecureShell Terminal!\n";
-    std::cout << "Type 'help' for a list of available commands.\n";
+    std::cout << "-------------Welcome to SecureShell Terminal!-------------\n\n";
+    std::cout << "Type 'help' for a list of available commands.\n\n";
 
     while (running) {
         displayPrompt();

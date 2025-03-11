@@ -5,7 +5,7 @@ project(SecureShell VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add source files
+# Add source files for main terminal application
 add_executable(SecureShell
     src/main.cpp
     src/terminal/Terminal.cpp
@@ -18,13 +18,18 @@ add_executable(SecureShell
     src/utils/Utils.cpp
 )
 
+# Add launcher application that creates a new window
+add_executable(SecureShellLauncher
+    src/launcher.cpp
+)
+
 # Include directories
 target_include_directories(SecureShell PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-# Set output directory
-set_target_properties(SecureShell PROPERTIES
+# Set output directory for both executables
+set_target_properties(SecureShell SecureShellLauncher PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
