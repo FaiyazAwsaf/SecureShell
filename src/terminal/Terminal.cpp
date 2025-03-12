@@ -4,6 +4,15 @@
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
+#include <conio.h> // For _getch()
+#include <windows.h> // For Windows console color
+
+// Function to set console text color
+void setConsoleColor(WORD color) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color);
+}
+
 
 Terminal::Terminal()
     : running(false),
@@ -14,13 +23,52 @@ Terminal::Terminal()
 void Terminal::start() {
     running = true;
 
+    // Set welcome message color to green
+    setConsoleColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     std::cout << "-------------Welcome to SecureShell Terminal!-------------\n\n";
     std::cout << "Type 'help' for a list of available commands.\n\n";
 
+    // Reset the text color to default (gray)
+    setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
     while (running) {
         displayPrompt();
+
+        // Read input character by character
         std::string input;
-        std::getline(std::cin, input);
+        char ch;
+        while ((ch = _getch()) != '\r') { // Read until Enter is pressed
+            if (ch == '\b') { // Handle backspace
+                if (!input.empty()) {
+                    input.pop_back();
+                    std::cout << "\b \b"; // Move cursor back, overwrite with space, move back again
+                }
+            } else {
+                input += ch;
+
+                // Check if the input matches a command
+                bool isCommand = false;
+                for (const auto& cmd : commandParser->getCommandList()) {
+                    if (input == cmd.first.substr(0, input.length())) {
+                        isCommand = true;
+                        break;
+                    }
+                }
+
+                // Set color based on whether the input is a command
+                if (isCommand) {
+                    setConsoleColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY); // Blue for commands
+                } else {
+                    setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // Default color
+                }
+
+                std::cout << ch; // Print the character
+            }
+        }
+
+        // Reset color to default after input is complete
+        setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        std::cout << std::endl;
 
         if (!input.empty()) {
             processCommand(input);
