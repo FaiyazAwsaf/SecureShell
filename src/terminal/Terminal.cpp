@@ -89,11 +89,16 @@ void Terminal::initializeCommands() {
         if (!masterPasswordExists && !initialized) {
             std::cout << "Password Manager - First Time Setup\n";
             std::cout << "Please create a master password: ";
-            std::string masterPassword;
-            std::getline(std::cin, masterPassword);
+            std::string masterPassword = Utils::readMaskedPassword();
             
             if (masterPassword.empty()) {
                 std::cout << "Master password cannot be empty.\n";
+                return;
+            }
+            
+            // Validate password strength
+            if (!Utils::validatePasswordStrength(masterPassword)) {
+                std::cout << "Password is too weak.\nIt must be at least 8 characters long and contain letters, special characters and numbers.\n";
                 return;
             }
             
@@ -112,8 +117,7 @@ void Terminal::initializeCommands() {
             }
             
             std::cout << "Enter master password: ";
-            std::string masterPassword;
-            std::getline(std::cin, masterPassword);
+            std::string masterPassword = Utils::readMaskedPassword();
             
             if (!passwordManager.authenticate(masterPassword)) {
                 std::cout << "Authentication failed. Incorrect master password.\n";
@@ -231,9 +235,15 @@ void Terminal::initializeCommands() {
             } else if (choice == "7") { // Change master password
                 std::string oldPassword, newPassword;
                 std::cout << "Enter current master password: ";
-                std::getline(std::cin, oldPassword);
+                oldPassword = Utils::readMaskedPassword();
                 std::cout << "Enter new master password: ";
-                std::getline(std::cin, newPassword);
+                newPassword = Utils::readMaskedPassword();
+                
+                // Validate new password strength
+                if (!Utils::validatePasswordStrength(newPassword)) {
+                    std::cout << "Password is too weak.\nIt must be at least 8 characters long and contain letters, special characters and numbers.\n";
+                    continue;
+                }
                 
                 if (passwordManager.changeMasterPassword(oldPassword, newPassword)) {
                     std::cout << "Master password changed successfully.\n";

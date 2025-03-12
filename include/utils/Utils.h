@@ -22,4 +22,9 @@ namespace Utils {
 
     // Random number generation
     std::string generateRandomString(size_t length);
+    
+    // Password utilities
+    std::string readMaskedPassword();
+    bool validatePasswordStrength(const std::string& password);
+
 };
