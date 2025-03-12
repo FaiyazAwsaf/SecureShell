@@ -13,11 +13,8 @@ Terminal::Terminal()
 
 void Terminal::start() {
     running = true;
-    
-    // Display welcome message
+
     std::cout << "-------------Welcome to SecureShell Terminal!-------------\n\n";
-    
-    // Display help hint
     std::cout << "Type 'help' for a list of available commands.\n\n";
 
     while (running) {
@@ -267,25 +264,84 @@ void Terminal::executeCommand(const std::string& command, const std::vector<std:
 
 void Terminal::compileAndRun(const std::string& filename) {
     std::string ext = Utils::getFileExtension(filename);
-    std::string compiler = "g++"; // Default compiler
-    bool autoExecute = true; // Default to auto-execute
+    bool autoExecute = true;
+    std::string command;
+    std::string outfile;
+    int result = -1;
 
-    // Add compilation logic here based on file extension
-    // This is a simplified example
+    // Determine compilation/execution based on file extension
     if (ext == ".cpp" || ext == ".cc") {
-        std::string outfile = filename.substr(0, filename.length() - ext.length());
+        // C++ compilation
+        std::string compiler = "g++";
+        outfile = filename.substr(0, filename.length() - ext.length());
         #ifdef _WIN32
         outfile += ".exe";
         #endif
-
-        std::string command = compiler + " " + filename + " -o " + outfile;
-        int result = system(command.c_str());
-
+        
+        command = compiler + " " + filename + " -o " + outfile;
+        std::cout << "Compiling C++ file: " << command << "\n";
+        result = system(command.c_str());
+    } 
+    else if (ext == ".c") {
+        // C compilation
+        std::string compiler = "gcc";
+        outfile = filename.substr(0, filename.length() - ext.length());
+        #ifdef _WIN32
+        outfile += ".exe";
+        #endif
+        
+        command = compiler + " " + filename + " -o " + outfile;
+        std::cout << "Compiling C file: " << command << "\n";
+        result = system(command.c_str());
+    }
+    else if (ext == ".java") {
+        // Java compilation
+        std::string compiler = "javac";
+        command = compiler + " " + filename;
+        std::cout << "Compiling Java file: " << command << "\n";
+        result = system(command.c_str());
+        
         if (result == 0 && autoExecute) {
-            system(outfile.c_str());
+            // Extract class name (assuming filename matches class name)
+            std::string className = filename.substr(0, filename.length() - ext.length());
+            command = "java " + className;
+            std::cout << "Running Java class: " << command << "\n";
+            system(command.c_str());
+            return; // Return early as we've already executed
         }
     }
-    // Add support for other file types...
+    else if (ext == ".py") {
+        // Python execution (no compilation needed)
+        command = "python " + filename;
+        std::cout << "Running Python script: " << command << "\n";
+        system(command.c_str());
+        return; // Return early as we've already executed
+    }
+    else if (ext == ".rs") {
+        // Rust compilation
+        std::string compiler = "rustc";
+        outfile = filename.substr(0, filename.length() - ext.length());
+        #ifdef _WIN32
+        outfile += ".exe";
+        #endif
+        
+        command = compiler + " " + filename + " -o " + outfile;
+        std::cout << "Compiling Rust file: " << command << "\n";
+        result = system(command.c_str());
+    }
+    else {
+        std::cout << "Unsupported file extension: " << ext << "\n";
+        std::cout << "Supported extensions: .cpp, .cc, .c, .java, .py, .rs\n";
+        return;
+    }
+
+    // Auto-execute compiled languages if compilation was successful
+    if (result == 0 && autoExecute && !outfile.empty()) {
+        std::cout << "Executing: " << outfile << "\n";
+        system(outfile.c_str());
+    } else if (result != 0) {
+        std::cout << "Compilation failed with error code: " << result << "\n";
+    }
 }
 
 void Terminal::displayHelp() const {
