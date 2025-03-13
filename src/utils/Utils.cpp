@@ -3,6 +3,9 @@
 #include <random>
 #include <sstream>
 #include <filesystem>
+#include <iostream>
+#include <conio.h>
+#include <regex>
 
 namespace Utils {
     bool fileExists(const std::string& path) {
@@ -88,5 +91,42 @@ namespace Utils {
             result += charset[distribution(generator)];
         }
         return result;
+    }
+    
+    std::string readMaskedPassword() {
+        std::string password;
+        char ch;
+        while ((ch = _getch()) != '\r') { // Read until Enter key is pressed
+            if (ch == '\b') { // Handle backspace
+                if (!password.empty()) {
+                    password.pop_back();
+                    std::cout << "\b \b"; // Erase the last * from console
+                }
+            } else if (ch >= 32 && ch <= 126) { // Only accept printable characters
+                password.push_back(ch);
+                std::cout << '*'; // Print * instead of the actual character
+            }
+        }
+        std::cout << std::endl; // Move to next line after Enter is pressed
+        return password;
+    }
+    
+    bool validatePasswordStrength(const std::string& password) {
+        // Check minimum length
+        if (password.length() < 8) {
+            return false;
+        }
+        
+        // Check for at least one letter
+        bool hasLetter = std::regex_search(password, std::regex("[a-zA-Z]"));
+        
+        // Check for at least one digit
+        bool hasDigit = std::regex_search(password, std::regex("[0-9]"));
+        
+        // Check for at least one special character
+        bool hasSpecial = std::regex_search(password, std::regex("[!@#$%^&*]"));
+
+        // Password must have at least a letter and a digit
+        return hasLetter && hasDigit && hasSpecial;
     }
 }
