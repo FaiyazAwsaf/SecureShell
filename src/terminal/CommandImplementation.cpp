@@ -321,6 +321,13 @@ void CommandImplementation::compileAndRun(const std::string& filename) {
         system(command.c_str());
         return; // Return early as we've already executed
     }
+    else if (ext == ".js") {
+        // JavaScript execution with Node.js (no compilation needed)
+        command = "node " + filename;
+        std::cout << "Running JavaScript file: " << command << "\n";
+        system(command.c_str());
+        return; // Return early as we've already executed
+    }
     else if (ext == ".rs") {
         // Rust compilation
         std::string compiler = "rustc";
@@ -335,7 +342,7 @@ void CommandImplementation::compileAndRun(const std::string& filename) {
     }
     else {
         std::cout << "Unsupported file extension: " << ext << "\n";
-        std::cout << "Supported extensions: .cpp, .cc, .c, .java, .py, .rs\n";
+        std::cout << "Supported extensions: .cpp, .cc, .c, .java, .py, .js, .rs\n";
         return;
     }
 
