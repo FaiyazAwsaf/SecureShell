@@ -5,17 +5,20 @@
 #include <unordered_map>
 #include "CommandParser.h"
 
+
+class CommandImplementation;
+
 class Terminal {
 public:
     Terminal();
-    ~Terminal() = default;
+    ~Terminal();  // Remove =default and move to cpp file
 
     void start();
     void stop();
     bool isRunning() const;
+
+    const CommandParser& getCommandParser() const { return *commandParser; }
     
-
-
 private:
     void processCommand(const std::string& input);
     void initializeCommands();
@@ -27,5 +30,6 @@ private:
 
     bool running;
     std::unique_ptr<CommandParser> commandParser;
+    std::unique_ptr<CommandImplementation> commandImpl;
     std::unordered_map<std::string, std::string> aliases;
 };

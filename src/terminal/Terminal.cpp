@@ -1,6 +1,7 @@
 #include "terminal/Terminal.h"
 #include "utils/Utils.h"
 #include "passman/PasswordManager.h"
+#include "terminal/CommandImplementation.h"  // Add this include
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
@@ -16,9 +17,13 @@ void setConsoleColor(WORD color) {
 
 Terminal::Terminal()
     : running(false),
-      commandParser(std::make_unique<CommandParser>()) {
+      commandParser(std::make_unique<CommandParser>()),
+      commandImpl(std::make_unique<CommandImplementation>(*this)) {
     initializeCommands();
 }
+
+// Add this after the constructor
+Terminal::~Terminal() = default;
 
 void Terminal::start() {
     running = true;
@@ -101,212 +106,20 @@ void Terminal::processCommand(const std::string& input) {
 }
 
 void Terminal::initializeCommands() {
-    commandParser->registerCommand("help", [this](const auto& args) { displayHelp(); });
-    commandParser->registerCommand("exit", [this](const auto& args) { stop(); });
-    // Theme command removed
-    commandParser->registerCommand("cd", [this](const auto& args) {
-        if (args.empty()) {
-            std::cout << "Usage: cd <directory>\n";
-            return;
-        }
-        if (!Utils::changeDirectory(args[0])) {
-            std::cout << "Failed to change directory\n";
-        }
-    });
-    commandParser->registerCommand("ls", [](const auto& args) {
-        std::string path = args.empty() ? "." : args[0];
-        auto files = Utils::listDirectory(path);
-        for (const auto& file : files) {
-            std::cout << file << "\n";
-        }
-    });
-    commandParser->registerCommand("compile", [this](const auto& args) {
-        if (args.empty()) {
-            std::cout << "Usage: compile <filename>\n";
-            return;
-        }
-        compileAndRun(args[0]);
-    });
-    commandParser->registerCommand("passman", [this](const auto& args) {
-        static passman::PasswordManager passwordManager;
-        static bool initialized = false;
-        
-        // Check if master password file exists
-        bool masterPasswordExists = passwordManager.hasMasterPassword();
-        
-        if (!masterPasswordExists && !initialized) {
-            std::cout << "Password Manager - First Time Setup\n";
-            std::cout << "Please create a master password: ";
-            std::string masterPassword = Utils::readMaskedPassword();
-            
-            if (masterPassword.empty()) {
-                std::cout << "Master password cannot be empty.\n";
-                return;
-            }
-            
-            // Validate password strength
-            if (!Utils::validatePasswordStrength(masterPassword)) {
-                std::cout << "Password is too weak.\nIt must be at least 8 characters long and contain letters, special characters and numbers.\n";
-                return;
-            }
-            
-            if (passwordManager.initialize(masterPassword)) {
-                std::cout << "Password Manager initialized successfully.\n";
-                initialized = true;
-            } else {
-                std::cout << "Failed to initialize Password Manager.\n";
-                return;
-            }
-        } else {
-            // Load the master password hash and salt before authentication
-            if (masterPasswordExists && !initialized) {
-                passwordManager.load();
-                initialized = true;
-            }
-            
-            std::cout << "Enter master password: ";
-            std::string masterPassword = Utils::readMaskedPassword();
-            
-            if (!passwordManager.authenticate(masterPassword)) {
-                std::cout << "Authentication failed. Incorrect master password.\n";
-                return;
-            }
-            
-            std::cout << "Authentication successful.\n";
-        }
-        
-        // Password manager command loop
-        bool running = true;
-        while (running) {
-            std::cout << "\nPassword Manager Commands:\n";
-            std::cout << "1. Add password\n";
-            std::cout << "2. Get password\n";
-            std::cout << "3. List services\n";
-            std::cout << "4. Remove password\n";
-            std::cout << "5. Update password\n";
-            std::cout << "6. Generate password\n";
-            std::cout << "7. Change master password\n";
-            std::cout << "8. Exit password manager\n";
-            std::cout << "Enter choice: ";
-            
-            std::string choice;
-            std::getline(std::cin, choice);
-            
-            if (choice == "1") { // Add password
-                std::string service, username, password;
-                std::cout << "Enter service name: ";
-                std::getline(std::cin, service);
-                std::cout << "Enter username: ";
-                std::getline(std::cin, username);
-                std::cout << "Enter password (or leave empty to generate): ";
-                std::getline(std::cin, password);
-                
-                if (password.empty()) {
-                    password = passwordManager.generatePassword();
-                    std::cout << "Generated password: " << password << "\n";
-                }
-                
-                if (passwordManager.addEntry(service, username, password)) {
-                    std::cout << "Password added successfully.\n";
-                } else {
-                    std::cout << "Failed to add password.\n";
-                }
-            } else if (choice == "2") { // Get password
-                std::string service;
-                std::cout << "Enter service name: ";
-                std::getline(std::cin, service);
-                
-                auto entry = passwordManager.getEntry(service);
-                if (entry.service.empty()) {
-                    std::cout << "Service not found.\n";
-                } else {
-                    std::cout << "Service: " << entry.service << "\n";
-                    std::cout << "Username: " << entry.username << "\n";
-                    // Display the actual password instead of a message about hash
-                    std::cout << "Password: " << passwordManager.getPassword(service) << "\n";
-                }
-            } else if (choice == "3") { // List services
-                auto services = passwordManager.listServices();
-                if (services.empty()) {
-                    std::cout << "No services stored.\n";
-                } else {
-                    std::cout << "Stored services:\n";
-                    for (const auto& service : services) {
-                        std::cout << "- " << service << "\n";
-                    }
-                }
-            } else if (choice == "4") { // Remove password
-                std::string service;
-                std::cout << "Enter service name to remove: ";
-                std::getline(std::cin, service);
-                
-                if (passwordManager.removeEntry(service)) {
-                    std::cout << "Password removed successfully.\n";
-                } else {
-                    std::cout << "Failed to remove password. Service not found.\n";
-                }
-            } else if (choice == "5") { // Update password
-                std::string service, username, password;
-                std::cout << "Enter service name: ";
-                std::getline(std::cin, service);
-                std::cout << "Enter new username: ";
-                std::getline(std::cin, username);
-                std::cout << "Enter new password (or leave empty to generate): ";
-                std::getline(std::cin, password);
-                
-                if (password.empty()) {
-                    password = passwordManager.generatePassword();
-                    std::cout << "Generated password: " << password << "\n";
-                }
-                
-                if (passwordManager.updateEntry(service, username, password)) {
-                    std::cout << "Password updated successfully.\n";
-                } else {
-                    std::cout << "Failed to update password. Service not found.\n";
-                }
-            } else if (choice == "6") { // Generate password
-                std::string lengthStr;
-                std::cout << "Enter password length (default 16): ";
-                std::getline(std::cin, lengthStr);
-                
-                size_t length = 16;
-                if (!lengthStr.empty()) {
-                    try {
-                        length = std::stoul(lengthStr);
-                    } catch (...) {
-                        std::cout << "Invalid length, using default (16).\n";
-                    }
-                }
-                
-                std::string password = passwordManager.generatePassword(length);
-                std::cout << "Generated password: " << password << "\n";
-            } else if (choice == "7") { // Change master password
-                std::string oldPassword, newPassword;
-                std::cout << "Enter current master password: ";
-                oldPassword = Utils::readMaskedPassword();
-                std::cout << "Enter new master password: ";
-                newPassword = Utils::readMaskedPassword();
-                
-                // Validate new password strength
-                if (!Utils::validatePasswordStrength(newPassword)) {
-                    std::cout << "Password is too weak.\nIt must be at least 8 characters long and contain letters, special characters and numbers.\n";
-                    continue;
-                }
-                
-                if (passwordManager.changeMasterPassword(oldPassword, newPassword)) {
-                    std::cout << "Master password changed successfully.\n";
-                } else {
-                    std::cout << "Failed to change master password. Incorrect current password.\n";
-                }
-            } else if (choice == "8") { // Exit
-                running = false;
-                std::cout << "Exiting password manager.\n";
-            } else {
-                std::cout << "Invalid choice. Please try again.\n";
-            }
-        }
-    });
-    // Add more commands here...
+    commandParser->registerCommand("help", [this](const auto& args) { commandImpl->help(); });
+    commandParser->registerCommand("exit", [this](const auto& args) { commandImpl->exit(); });
+    commandParser->registerCommand("cd", [this](const auto& args) { commandImpl->cd(args); });
+    commandParser->registerCommand("ls", [this](const auto& args) { commandImpl->ls(args); });
+    commandParser->registerCommand("compile", [this](const auto& args) { commandImpl->compile(args); });
+    commandParser->registerCommand("passman", [this](const auto& args) { commandImpl->passman(args); });
+    commandParser->registerCommand("copy", [this](const auto& args) { commandImpl->copy(args); });
+    commandParser->registerCommand("move", [this](const auto& args) { commandImpl->move(args); });
+    commandParser->registerCommand("rename", [this](const auto& args) { commandImpl->rename(args); });
+    commandParser->registerCommand("dcreate", [this](const auto& args) { commandImpl->create_directory(args); });
+    commandParser->registerCommand("fcreate", [this](const auto& args) { commandImpl->create_file(args); });
+    commandParser->registerCommand("remove", [this](const auto& args) { commandImpl->remove(args); });
+    commandParser->registerCommand("perm", [this](const auto& args) { commandImpl->display_permission(args); });
+    commandParser->registerCommand("curr", [this](const auto& args) { commandImpl->get_current_directory(args); });
 }
 
 void Terminal::displayPrompt() const {
@@ -317,96 +130,5 @@ void Terminal::executeCommand(const std::string& command, const std::vector<std:
     if (!commandParser->executeCommand(command, args)) {
         std::cout << "Unknown command: " << command << "\n";
         std::cout << "Type 'help' for a list of available commands.\n";
-    }
-}
-
-void Terminal::compileAndRun(const std::string& filename) {
-    std::string ext = Utils::getFileExtension(filename);
-    bool autoExecute = true;
-    std::string command;
-    std::string outfile;
-    int result = -1;
-
-    // Determine compilation/execution based on file extension
-    if (ext == ".cpp" || ext == ".cc") {
-        // C++ compilation
-        std::string compiler = "g++";
-        outfile = filename.substr(0, filename.length() - ext.length());
-        #ifdef _WIN32
-        outfile += ".exe";
-        #endif
-        
-        command = compiler + " " + filename + " -o " + outfile;
-        std::cout << "Compiling C++ file: " << command << "\n";
-        result = system(command.c_str());
-    } 
-    else if (ext == ".c") {
-        // C compilation
-        std::string compiler = "gcc";
-        outfile = filename.substr(0, filename.length() - ext.length());
-        #ifdef _WIN32
-        outfile += ".exe";
-        #endif
-        
-        command = compiler + " " + filename + " -o " + outfile;
-        std::cout << "Compiling C file: " << command << "\n";
-        result = system(command.c_str());
-    }
-    else if (ext == ".java") {
-        // Java compilation
-        std::string compiler = "javac";
-        command = compiler + " " + filename;
-        std::cout << "Compiling Java file: " << command << "\n";
-        result = system(command.c_str());
-        
-        if (result == 0 && autoExecute) {
-            // Extract class name (assuming filename matches class name)
-            std::string className = filename.substr(0, filename.length() - ext.length());
-            command = "java " + className;
-            std::cout << "Running Java class: " << command << "\n";
-            system(command.c_str());
-            return; // Return early as we've already executed
-        }
-    }
-    else if (ext == ".py") {
-        // Python execution (no compilation needed)
-        command = "python " + filename;
-        std::cout << "Running Python script: " << command << "\n";
-        system(command.c_str());
-        return; // Return early as we've already executed
-    }
-    else if (ext == ".rs") {
-        // Rust compilation
-        std::string compiler = "rustc";
-        outfile = filename.substr(0, filename.length() - ext.length());
-        #ifdef _WIN32
-        outfile += ".exe";
-        #endif
-        
-        command = compiler + " " + filename + " -o " + outfile;
-        std::cout << "Compiling Rust file: " << command << "\n";
-        result = system(command.c_str());
-    }
-    else {
-        std::cout << "Unsupported file extension: " << ext << "\n";
-        std::cout << "Supported extensions: .cpp, .cc, .c, .java, .py, .rs\n";
-        return;
-    }
-
-    // Auto-execute compiled languages if compilation was successful
-    if (result == 0 && autoExecute && !outfile.empty()) {
-        std::cout << "Executing: " << outfile << "\n";
-        system(outfile.c_str());
-    } else if (result != 0) {
-        std::cout << "Compilation failed with error code: " << result << "\n";
-    }
-}
-
-void Terminal::displayHelp() const {
-    std::cout << "Available commands:\n";
-    
-    auto commands = commandParser->getCommandList();
-    for (const auto& [cmd, desc] : commands) {
-        std::cout << cmd << "\t" << desc << "\n";
     }
 }

@@ -10,6 +10,7 @@ add_executable(SecureShell
     src/main.cpp
     src/terminal/Terminal.cpp
     src/terminal/CommandParser.cpp
+    src/terminal/CommandImplementation.cpp
     src/passman/PasswordManager.cpp
     src/passman/PasswordStorage.cpp
     src/passman/PasswordCrypto.cpp
