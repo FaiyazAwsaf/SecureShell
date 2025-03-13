@@ -82,21 +82,21 @@ void Terminal::initializeCommands() {
     commandParser->registerCommand("passman", [this](const auto& args) {
         static passman::PasswordManager passwordManager;
         static bool initialized = false;
-        
+
         // Check if master password file exists
         bool masterPasswordExists = passwordManager.hasMasterPassword();
-        
+
         if (!masterPasswordExists && !initialized) {
             std::cout << "Password Manager - First Time Setup\n";
             std::cout << "Please create a master password: ";
             std::string masterPassword;
             std::getline(std::cin, masterPassword);
-            
+
             if (masterPassword.empty()) {
                 std::cout << "Master password cannot be empty.\n";
                 return;
             }
-            
+
             if (passwordManager.initialize(masterPassword)) {
                 std::cout << "Password Manager initialized successfully.\n";
                 initialized = true;
@@ -110,19 +110,19 @@ void Terminal::initializeCommands() {
                 passwordManager.load();
                 initialized = true;
             }
-            
+
             std::cout << "Enter master password: ";
             std::string masterPassword;
             std::getline(std::cin, masterPassword);
-            
+
             if (!passwordManager.authenticate(masterPassword)) {
                 std::cout << "Authentication failed. Incorrect master password.\n";
                 return;
             }
-            
+
             std::cout << "Authentication successful.\n";
         }
-        
+
         // Password manager command loop
         bool running = true;
         while (running) {
@@ -136,10 +136,10 @@ void Terminal::initializeCommands() {
             std::cout << "7. Change master password\n";
             std::cout << "8. Exit password manager\n";
             std::cout << "Enter choice: ";
-            
+
             std::string choice;
             std::getline(std::cin, choice);
-            
+
             if (choice == "1") { // Add password
                 std::string service, username, password;
                 std::cout << "Enter service name: ";
@@ -148,12 +148,12 @@ void Terminal::initializeCommands() {
                 std::getline(std::cin, username);
                 std::cout << "Enter password (or leave empty to generate): ";
                 std::getline(std::cin, password);
-                
+
                 if (password.empty()) {
                     password = passwordManager.generatePassword();
                     std::cout << "Generated password: " << password << "\n";
                 }
-                
+
                 if (passwordManager.addEntry(service, username, password)) {
                     std::cout << "Password added successfully.\n";
                 } else {
@@ -163,7 +163,7 @@ void Terminal::initializeCommands() {
                 std::string service;
                 std::cout << "Enter service name: ";
                 std::getline(std::cin, service);
-                
+
                 auto entry = passwordManager.getEntry(service);
                 if (entry.service.empty()) {
                     std::cout << "Service not found.\n";
@@ -187,7 +187,7 @@ void Terminal::initializeCommands() {
                 std::string service;
                 std::cout << "Enter service name to remove: ";
                 std::getline(std::cin, service);
-                
+
                 if (passwordManager.removeEntry(service)) {
                     std::cout << "Password removed successfully.\n";
                 } else {
@@ -201,12 +201,12 @@ void Terminal::initializeCommands() {
                 std::getline(std::cin, username);
                 std::cout << "Enter new password (or leave empty to generate): ";
                 std::getline(std::cin, password);
-                
+
                 if (password.empty()) {
                     password = passwordManager.generatePassword();
                     std::cout << "Generated password: " << password << "\n";
                 }
-                
+
                 if (passwordManager.updateEntry(service, username, password)) {
                     std::cout << "Password updated successfully.\n";
                 } else {
@@ -216,7 +216,7 @@ void Terminal::initializeCommands() {
                 std::string lengthStr;
                 std::cout << "Enter password length (default 16): ";
                 std::getline(std::cin, lengthStr);
-                
+
                 size_t length = 16;
                 if (!lengthStr.empty()) {
                     try {
@@ -225,7 +225,7 @@ void Terminal::initializeCommands() {
                         std::cout << "Invalid length, using default (16).\n";
                     }
                 }
-                
+
                 std::string password = passwordManager.generatePassword(length);
                 std::cout << "Generated password: " << password << "\n";
             } else if (choice == "7") { // Change master password
@@ -234,7 +234,7 @@ void Terminal::initializeCommands() {
                 std::getline(std::cin, oldPassword);
                 std::cout << "Enter new master password: ";
                 std::getline(std::cin, newPassword);
-                
+
                 if (passwordManager.changeMasterPassword(oldPassword, newPassword)) {
                     std::cout << "Master password changed successfully.\n";
                 } else {
@@ -277,11 +277,11 @@ void Terminal::compileAndRun(const std::string& filename) {
         #ifdef _WIN32
         outfile += ".exe";
         #endif
-        
+
         command = compiler + " " + filename + " -o " + outfile;
         std::cout << "Compiling C++ file: " << command << "\n";
-        result = system(command.c_str());
-    } 
+        result = system(outfile.c_str()); std::cout << std::endl;
+    }
     else if (ext == ".c") {
         // C compilation
         std::string compiler = "gcc";
@@ -289,10 +289,10 @@ void Terminal::compileAndRun(const std::string& filename) {
         #ifdef _WIN32
         outfile += ".exe";
         #endif
-        
+
         command = compiler + " " + filename + " -o " + outfile;
         std::cout << "Compiling C file: " << command << "\n";
-        result = system(command.c_str());
+        result = system(outfile.c_str()); std::cout << std::endl;
     }
     else if (ext == ".java") {
         // Java compilation
@@ -300,7 +300,7 @@ void Terminal::compileAndRun(const std::string& filename) {
         command = compiler + " " + filename;
         std::cout << "Compiling Java file: " << command << "\n";
         result = system(command.c_str());
-        
+
         if (result == 0 && autoExecute) {
             // Extract class name (assuming filename matches class name)
             std::string className = filename.substr(0, filename.length() - ext.length());
@@ -317,6 +317,13 @@ void Terminal::compileAndRun(const std::string& filename) {
         system(command.c_str());
         return; // Return early as we've already executed
     }
+    else if (ext == ".js") {
+        // JavaScript execution with Node.js (no compilation needed)
+        command = "node " + filename;
+        std::cout << "Running JavaScript file: " << command << "\n";
+        system(command.c_str());
+        return; // Return early as we've already executed
+    }
     else if (ext == ".rs") {
         // Rust compilation
         std::string compiler = "rustc";
@@ -324,14 +331,14 @@ void Terminal::compileAndRun(const std::string& filename) {
         #ifdef _WIN32
         outfile += ".exe";
         #endif
-        
+
         command = compiler + " " + filename + " -o " + outfile;
         std::cout << "Compiling Rust file: " << command << "\n";
         result = system(command.c_str());
     }
     else {
         std::cout << "Unsupported file extension: " << ext << "\n";
-        std::cout << "Supported extensions: .cpp, .cc, .c, .java, .py, .rs\n";
+        std::cout << "Supported extensions: .cpp, .cc, .c, .java, .py, .js, .rs\n";
         return;
     }
 
@@ -346,7 +353,7 @@ void Terminal::compileAndRun(const std::string& filename) {
 
 void Terminal::displayHelp() const {
     std::cout << "Available commands:\n";
-    
+
     auto commands = commandParser->getCommandList();
     for (const auto& [cmd, desc] : commands) {
         std::cout << cmd << "\t" << desc << "\n";
