@@ -136,7 +136,7 @@ void CommandImplementation::move(const std::vector<std::string>& args) {
 
 void CommandImplementation::create_directory(const std::vector<std::string>& args) {
     if (args.empty()) {
-        std::cout << "Usage: mkdir <directory_name>\n";
+        std::cout << "Usage: dcreate <directory_name>\n";
         return;
     }
 
@@ -161,7 +161,7 @@ void CommandImplementation::create_directory(const std::vector<std::string>& arg
 
 void CommandImplementation::create_file(const std::vector<std::string>& args) {
     if (args.empty()) {
-        std::cout << "Usage: touch <filename>\n";
+        std::cout << "Usage: fcreate <filename>\n";
         return;
     }
 
@@ -372,7 +372,7 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
     
     if (!masterPasswordExists && !initialized) {
         std::cout << "Password Manager - First Time Setup\n";
-        std::cout << "Please create a master password: ";
+        std::cout << "\nPlease create a master password: ";
         std::string masterPassword = Utils::readMaskedPassword();
         
         if (masterPassword.empty()) {
@@ -380,7 +380,6 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             return;
         }
         
-        // Validate password strength
         if (!Utils::validatePasswordStrength(masterPassword)) {
             std::cout << "Password is too weak.\nIt must be at least 8 characters long and contain letters, special characters and numbers.\n";
             return;
@@ -399,7 +398,8 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             passwordManager.load();
             initialized = true;
         }
-        
+
+        std::cout << "====  Password Manager  =====\n\n";
         std::cout << "Enter master password: ";
         std::string masterPassword = Utils::readMaskedPassword();
         
@@ -408,7 +408,9 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             return;
         }
         
-        std::cout << "Authentication successful.\n";
+        std::cout << "***  Authentication successful ***\n\n";
+        std::cout << "***  Welcome to Password Manager ***\n";
+
     }
     
     // Password manager command loop
@@ -423,12 +425,13 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
         std::cout << "6. Generate password\n";
         std::cout << "7. Change master password\n";
         std::cout << "8. Exit password manager\n";
-        std::cout << "Enter choice: ";
+        std::cout << "\nEnter choice: ";
         
         std::string choice;
         std::getline(std::cin, choice);
         
-        if (choice == "1") { // Add password
+        if (choice == "1") { //
+            std::cout << "---- Add password ----\n";
             std::string service, username, password;
             std::cout << "Enter service name: ";
             std::getline(std::cin, service);
@@ -447,7 +450,8 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             } else {
                 std::cout << "Failed to add password.\n";
             }
-        } else if (choice == "2") { // Get password
+        } else if (choice == "2") {
+            std::cout << "---- Get password ----";
             std::string service;
             std::cout << "Enter service name: ";
             std::getline(std::cin, service);
@@ -462,28 +466,32 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
                 std::cout << "Password: " << passwordManager.getPassword(service) << "\n";
             }
         } else if (choice == "3") { // List services
+            std::cout << "---- All Stored Services ----.\n";
+
             auto services = passwordManager.listServices();
             if (services.empty()) {
-                std::cout << "No services stored.\n";
+                std::cout << "\nNo services stored.\n";
             } else {
-                std::cout << "Stored services:\n";
                 for (const auto& service : services) {
-                    std::cout << "- " << service << "\n";
+                    std::cout << "# " << service << "\n";
                 }
             }
         } else if (choice == "4") { // Remove password
+            std::cout << "---- Remove Service ----\n";
             std::string service;
-            std::cout << "Enter service name to remove: ";
+            std::cout << "\nEnter service name to remove: ";
             std::getline(std::cin, service);
             
             if (passwordManager.removeEntry(service)) {
-                std::cout << "Password removed successfully.\n";
+                std::cout << "\nPassword removed successfully.\n";
             } else {
-                std::cout << "Failed to remove password. Service not found.\n";
+                std::cout << "\nFailed to remove password. Service not found.\n";
             }
-        } else if (choice == "5") { // Update password
+        } else if (choice == "5") {
+            std::cout << "---- Update Service ----\n";
+
             std::string service, username, password;
-            std::cout << "Enter service name: ";
+            std::cout << "\nEnter service name: ";
             std::getline(std::cin, service);
             std::cout << "Enter new username: ";
             std::getline(std::cin, username);
@@ -492,15 +500,16 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             
             if (password.empty()) {
                 password = passwordManager.generatePassword();
-                std::cout << "Generated password: " << password << "\n";
+                std::cout << "\nGenerated password: " << password << "\n";
             }
             
             if (passwordManager.updateEntry(service, username, password)) {
-                std::cout << "Password updated successfully.\n";
+                std::cout << "\nPassword updated successfully.\n";
             } else {
-                std::cout << "Failed to update password. Service not found.\n";
+                std::cout << "\nFailed to update password. Service not found.\n";
             }
-        } else if (choice == "6") { // Generate password
+        } else if (choice == "6") {
+            std::cout << "---- Generate Password ----\n\n";
             std::string lengthStr;
             std::cout << "Enter password length (default 16): ";
             std::getline(std::cin, lengthStr);
