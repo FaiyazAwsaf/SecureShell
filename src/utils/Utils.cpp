@@ -79,7 +79,7 @@ namespace Utils {
             "0123456789"
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             "abcdefghijklmnopqrstuvwxyz"
-            "!@#$%^&*()";
+            "!@#$%^&*()-=_+";
 
         std::random_device rd;
         std::mt19937 generator(rd());
@@ -124,7 +124,7 @@ namespace Utils {
         bool hasDigit = std::regex_search(password, std::regex("[0-9]"));
         
         // Check for at least one special character
-        bool hasSpecial = std::regex_search(password, std::regex("[!@#$%^&*]"));
+        bool hasSpecial = std::regex_search(password, std::regex("[!@#$%^&*-=_+]"));
 
         // Password must have at least a letter and a digit
         return hasLetter && hasDigit && hasSpecial;
