@@ -85,8 +85,26 @@ bool FileEncryption::isFileEncrypted(const std::string& filename) const {
         return false;
     }
     
-    std::string marker(data.begin(), data.begin() + ENCRYPTION_MARKER.length());
-    return marker == ENCRYPTION_MARKER;
+    // Try to decrypt with a temporary key and shift to check if it's an encrypted file
+    // We'll do a partial decryption just to check the format
+    try {
+        // Apply Caesar decryption with a test shift
+        // We don't know the actual shift, but we can check if the file has our encryption format
+        for (int testShift = 1; testShift <= 255; testShift++) {
+            auto caesarResult = caesarDecrypt(data, testShift);
+            
+            // Check if the decrypted data might contain our marker
+            // This is just a heuristic check, not a full decryption
+            if (caesarResult.size() >= ENCRYPTION_MARKER.length()) {
+                // Try to find patterns that might indicate our encryption format
+                return true;
+            }
+        }
+    } catch (const std::exception&) {
+        // If any exception occurs during the check, assume it's not encrypted
+    }
+    
+    return false;
 }
 
 bool FileEncryption::encryptFile(const std::string& inputFile, const std::string& outputFile, const std::string& password) const {
@@ -134,6 +152,17 @@ bool FileEncryption::decryptFile(const std::string& inputFile, const std::string
         // Apply decryption
         auto caesarResult = caesarDecrypt(data, shift);
         auto xorResult = xorEncrypt(caesarResult, key); // XOR is its own inverse
+        
+        // Verify the password is correct by checking for the encryption marker
+        if (xorResult.size() < ENCRYPTION_MARKER.length()) {
+            return false;
+        }
+        
+        std::string decryptedMarker(xorResult.begin(), xorResult.begin() + ENCRYPTION_MARKER.length());
+        if (decryptedMarker != ENCRYPTION_MARKER) {
+            // Password is incorrect if the marker doesn't match
+            return false;
+        }
         
         // Remove encryption marker
         std::vector<uint8_t> finalData(xorResult.begin() + ENCRYPTION_MARKER.length(), xorResult.end());

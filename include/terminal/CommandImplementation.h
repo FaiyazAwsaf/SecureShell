@@ -4,6 +4,7 @@
 #include "terminal/Terminal.h"
 #include "passman/PasswordManager.h"
 #include "utils/Utils.h"
+#include "encryption/FileEncryption.h"
 #include <string>
 #include <vector>
 
@@ -25,6 +26,8 @@ public:
     void remove(const std::vector<std::string>& args);
     void compile(const std::vector<std::string>& args);
     void passman(const std::vector<std::string>& args);
+    void encrypt(const std::vector<std::string>& args);
+    void decrypt(const std::vector<std::string>& args);
 
 private:
     Terminal& terminal;

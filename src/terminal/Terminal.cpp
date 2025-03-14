@@ -120,6 +120,8 @@ void Terminal::initializeCommands() {
     commandParser->registerCommand("remove", [this](const auto& args) { commandImpl->remove(args); });
     commandParser->registerCommand("perm", [this](const auto& args) { commandImpl->display_permission(args); });
     commandParser->registerCommand("curr", [this](const auto& args) { commandImpl->get_current_directory(args); });
+    commandParser->registerCommand("encrypt", [this](const auto& args) { commandImpl->encrypt(args); });
+    commandParser->registerCommand("decrypt", [this](const auto& args) { commandImpl->decrypt(args); });
 }
 
 void Terminal::displayPrompt() const {

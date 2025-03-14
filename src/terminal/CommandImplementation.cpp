@@ -266,6 +266,89 @@ void CommandImplementation::remove(const std::vector<std::string>& args) {
     }
 }
 
+void CommandImplementation::encrypt(const std::vector<std::string>& args) {
+    if (args.size() != 3) {
+        std::cout << "Usage: encrypt <input_file> <output_file> <password>\n";
+        return;
+    }
+
+    std::string inputFile = args[0];
+    std::string outputFile = args[1];
+    std::string password = args[2];
+
+    // Check if input file exists
+    if (!std::filesystem::exists(inputFile)) {
+        std::cout << "Error: Input file '" << inputFile << "' does not exist.\n";
+        return;
+    }
+
+    // Check if output file already exists
+    if (std::filesystem::exists(outputFile)) {
+        std::cout << "Warning: Output file '" << outputFile << "' already exists. Overwrite? (y/n): ";
+        char choice;
+        std::cin >> choice;
+        std::cin.ignore(); // Clear the newline
+
+        if (tolower(choice) != 'y') {
+            std::cout << "Encryption cancelled.\n";
+            return;
+        }
+    }
+
+    // Create FileEncryption instance and encrypt the file
+    FileEncryption fileEncryptor;
+    if (fileEncryptor.encryptFile(inputFile, outputFile, password)) {
+        std::cout << "File encrypted successfully and saved to '" << outputFile << "'.\n";
+    } else {
+        std::cout << "Failed to encrypt the file.\n";
+    }
+}
+
+void CommandImplementation::decrypt(const std::vector<std::string>& args) {
+    if (args.size() != 3) {
+        std::cout << "Usage: decrypt <input_file> <output_file> <password>\n";
+        return;
+    }
+
+    std::string inputFile = args[0];
+    std::string outputFile = args[1];
+    std::string password = args[2];
+
+    // Check if input file exists
+    if (!std::filesystem::exists(inputFile)) {
+        std::cout << "Error: Input file '" << inputFile << "' does not exist.\n";
+        return;
+    }
+
+    // Check if output file already exists
+    if (std::filesystem::exists(outputFile)) {
+        std::cout << "Warning: Output file '" << outputFile << "' already exists. Overwrite? (y/n): ";
+        char choice;
+        std::cin >> choice;
+        std::cin.ignore(); // Clear the newline
+
+        if (tolower(choice) != 'y') {
+            std::cout << "Decryption cancelled.\n";
+            return;
+        }
+    }
+
+    // Create FileEncryption instance and decrypt the file
+    FileEncryption fileEncryptor;
+    
+    // First check if the file is encrypted
+    if (!fileEncryptor.isFileEncrypted(inputFile)) {
+        std::cout << "Failed to decrypt the file: The file does not appear to be encrypted.\n";
+        return;
+    }
+    
+    if (fileEncryptor.decryptFile(inputFile, outputFile, password)) {
+        std::cout << "File decrypted successfully and saved to '" << outputFile << "'.\n";
+    } else {
+        std::cout << "File Decryption Unsuccessful: Incorrect Password\n";
+    }
+}
+
 void CommandImplementation::compileAndRun(const std::string& filename) {
     std::string ext = Utils::getFileExtension(filename);
     bool autoExecute = true;
