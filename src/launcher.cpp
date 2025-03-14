@@ -9,17 +9,17 @@ void setConsoleColor(WORD color) {
     SetConsoleTextAttribute(hConsole, color);
 }
 
+std::string getAvailableDrive() {
+    const std::string drives[] = {"D:\\", "F:\\", "E:\\", "G:\\"};
+    for (const auto& drive : drives) {
+        if (std::filesystem::exists(drive)) {
+            return drive;
+        }
+    }
+    return "C:\\"; // Default to C:\ if none are available
+}
+
 int main() {
-    // Get the current executable path
-    char exePath[MAX_PATH];
-    GetModuleFileNameA(NULL, exePath, MAX_PATH);
-
-    // Get the directory of the current executable
-    std::filesystem::path exeDirectory = std::filesystem::path(exePath).parent_path();
-
-    // Construct the path to the main terminal executable
-    // Assuming the main terminal executable will be named SecureShell.exe
-    std::filesystem::path terminalPath = exeDirectory / "SecureShell.exe";
 
     // Create process information structures
     STARTUPINFOA si;
@@ -30,35 +30,33 @@ int main() {
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
 
-    // Convert path to string
-    std::string terminalPathStr = terminalPath.string();
 
     // Set the welcome message color to green
     setConsoleColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    std::cout << "-------------Welcome to SecureShell Terminal!-------------\n\n";
+    std::cout << "-------------   Welcome to SecureShell Terminal   -------------\n\n";
     std::cout << "Type 'help' for a list of available commands.\n\n";
 
     // Reset the text color to default (gray)
     setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
-    // Create a new console window and start the terminal process
+    std::string workingDirectory = getAvailableDrive();
+
     if (!CreateProcessA(
-        terminalPathStr.c_str(),  // Application name
-        NULL,                      // Command line arguments
-        NULL,                      // Process security attributes
-        NULL,                      // Thread security attributes
-        FALSE,                     // Handle inheritance
-        CREATE_NEW_CONSOLE,        // Creation flags - create a new console window
-        NULL,                      // Environment
-        "D:\\",                    // Current directory - set to system root
+        "SecureShell.exe",         // Application name
+        NULL,
+        NULL,
+        NULL,
+        FALSE,
+        CREATE_NEW_CONSOLE,
+        NULL,
+        workingDirectory.c_str(),  // Current directory
         &si,                       // Startup info
-        &pi                        // Process information
+        &pi                        // Process info
     )) {
         std::cerr << "Failed to create process. Error code: " << GetLastError() << std::endl;
         return 1;
     }
 
-    // Close process and thread handles
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
