@@ -122,6 +122,13 @@ void Terminal::initializeCommands() {
     commandParser->registerCommand("curr", [this](const auto& args) { commandImpl->get_current_directory(args); });
     commandParser->registerCommand("encrypt", [this](const auto& args) { commandImpl->encrypt(args); });
     commandParser->registerCommand("decrypt", [this](const auto& args) { commandImpl->decrypt(args); });
+	commandParser->registerCommand("cat", [this](const auto& args) { commandImpl->cat(args); });
+    commandParser->registerCommand("grep", [this](const auto& args) { commandImpl->grep(args); });
+    commandParser->registerCommand("head", [this](const auto& args) { commandImpl->head(args); });
+    commandParser->registerCommand("tree", [this](const auto& args) { commandImpl->tree(args); });
+    commandParser->registerCommand("find", [this](const auto& args) { commandImpl->find(args); });
+    commandParser->registerCommand("sysinfo", [this](const auto& args) { commandImpl->system_info(args); });
+    commandParser->registerCommand("stat", [this](const auto& args){ commandImpl->stat(args);});
 }
 
 void Terminal::displayPrompt() const {

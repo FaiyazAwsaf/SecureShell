@@ -1,4 +1,6 @@
 #include "terminal/CommandImplementation.h"
+
+#include <windows.h>
 #include <iostream>
 #include <filesystem>
 
@@ -632,5 +634,173 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
         } else {
             std::cout << "Invalid choice. Please try again.\n";
         }
+    }
+}
+
+void CommandImplementation::cat(const std::vector<std::string>& args) {
+    if (args.empty()) {
+        std::cout << "Usage: cat <filename>\n";
+        return;
+    }
+
+    std::ifstream file(args[0]);
+    if (!file) {
+        std::cout << "Error: Cannot open file '" << args[0] << "'\n";
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::cout << line << '\n';
+    }
+}
+
+void CommandImplementation::grep(const std::vector<std::string>& args) {
+    if (args.size() < 2) {
+        std::cout << "Usage: grep <pattern> <filename>\n";
+        return;
+    }
+
+    std::string pattern = args[0];
+    std::string filename = args[1];
+    std::ifstream file(filename);
+
+    if (!file) {
+        std::cout << "Error: Cannot open file '" << filename << "'\n";
+        return;
+    }
+
+    std::string line;
+    int lineNum = 0;
+    while (std::getline(file, line)) {
+        lineNum++;
+        if (line.find(pattern) != std::string::npos) {
+            std::cout << lineNum << ": " << line << '\n';
+        }
+    }
+}
+
+void CommandImplementation::head(const std::vector<std::string>& args) {
+    if (args.empty()) {
+        std::cout << "Usage: head <filename> [number_of_lines]\n";
+        return;
+    }
+
+    std::string filename = args[0];
+    int numLines = args.size() > 1 ? std::stoi(args[1]) : 10;
+
+    std::ifstream file(filename);
+    if (!file) {
+        std::cout << "Error: Cannot open file '" << filename << "'\n";
+        return;
+    }
+
+    std::string line;
+    int count = 0;
+    while (std::getline(file, line) && count < numLines) {
+        std::cout << line << '\n';
+        count++;
+    }
+}
+
+void CommandImplementation::tree(const std::vector<std::string>& args) {
+    std::string path = args.empty() ? "." : args[0];
+
+    std::function<void(const std::filesystem::path&, std::string)> printTree;
+    printTree = [&](const std::filesystem::path& path, std::string prefix) {
+        try {
+            for (const auto& entry : std::filesystem::directory_iterator(path)) {
+                std::cout << prefix << "|-- " << entry.path().filename().string() << '\n';
+                if (entry.is_directory()) {
+                    printTree(entry.path(), prefix + "|   ");
+                }
+            }
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cout << "Error accessing directory: " << e.what() << '\n';
+        }
+    };
+
+    std::cout << path << '\n';
+    printTree(path, "");
+}
+
+void CommandImplementation::find(const std::vector<std::string>& args) {
+    if (args.empty()) {
+        std::cout << "Usage: find <pattern>\n";
+        return;
+    }
+
+    std::string pattern = args[0];
+    std::function<void(const std::filesystem::path&)> searchFiles;
+
+    searchFiles = [&](const std::filesystem::path& path) {
+        try {
+            for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
+                if (entry.path().filename().string().find(pattern) != std::string::npos) {
+                    std::cout << entry.path().string() << '\n';
+                }
+            }
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cout << "Error searching files: " << e.what() << '\n';
+        }
+    };
+
+    searchFiles(".");
+}
+
+void CommandImplementation::system_info(const std::vector<std::string>& args) {
+    #ifdef _WIN32
+        system("systeminfo");
+    #else
+        system("uname -a");
+        std::cout << "\nCPU Info:\n";
+        system("cat /proc/cpuinfo | grep 'model name' | uniq");
+        std::cout << "\nMemory Info:\n";
+        system("free -h");
+    #endif
+}
+
+void CommandImplementation::stat(const std::vector<std::string>& args){
+    if (args.empty()) {
+        std::cout << "Usage: stat <filename/directory>\n";
+        return;
+    }
+
+    std::filesystem::path path = args[0];
+    try {
+        if (!std::filesystem::exists(path)) {
+            std::cout << "Error: '" << path.string() << "' does not exist.\n";
+            return;
+        }
+
+        std::filesystem::file_status status = std::filesystem::status(path);
+        auto lastWriteTime = std::filesystem::last_write_time(path);
+        auto fileSize = std::filesystem::is_regular_file(path) ? std::filesystem::file_size(path) : 0;
+
+        std::cout << "  File: " << path.filename().string() << "\n";
+        std::cout << "  Path: " << std::filesystem::absolute(path).string() << "\n";
+        std::cout << "  Size: " << fileSize << " bytes\n";
+
+        std::cout << "  Type: ";
+        if (std::filesystem::is_regular_file(path)) std::cout << "Regular file\n";
+        else if (std::filesystem::is_directory(path)) std::cout << "Directory\n";
+        else if (std::filesystem::is_symlink(path)) std::cout << "Symbolic link\n";
+        else std::cout << "Other\n";
+
+        std::cout << "  Permissions: ";
+        auto perms = status.permissions();
+        std::cout << ((perms & std::filesystem::perms::owner_read) != std::filesystem::perms::none ? "r" : "-");
+        std::cout << ((perms & std::filesystem::perms::owner_write) != std::filesystem::perms::none ? "w" : "-");
+        std::cout << ((perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none ? "x" : "-");
+        std::cout << ((perms & std::filesystem::perms::group_read) != std::filesystem::perms::none ? "r" : "-");
+        std::cout << ((perms & std::filesystem::perms::group_write) != std::filesystem::perms::none ? "w" : "-");
+        std::cout << ((perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none ? "x" : "-");
+        std::cout << ((perms & std::filesystem::perms::others_read) != std::filesystem::perms::none ? "r" : "-");
+        std::cout << ((perms & std::filesystem::perms::others_write) != std::filesystem::perms::none ? "w" : "-");
+        std::cout << ((perms & std::filesystem::perms::others_exec) != std::filesystem::perms::none ? "x" : "-");
+        std::cout << "\n";
+
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cout << "Error getting file properties: " << e.what() << "\n";
     }
 }
