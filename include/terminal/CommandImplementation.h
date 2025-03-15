@@ -28,6 +28,13 @@ public:
     void passman(const std::vector<std::string>& args);
     void encrypt(const std::vector<std::string>& args);
     void decrypt(const std::vector<std::string>& args);
+    void cat(const std::vector<std::string>& args);
+    void grep(const std::vector<std::string>& args);
+    void head(const std::vector<std::string>& args);
+    void tree(const std::vector<std::string>& args);
+    void find(const std::vector<std::string>& args);
+    void system_info(const std::vector<std::string>& args);
+    void stat(const std::vector<std::string>& args);
 
 private:
     Terminal& terminal;
