@@ -14,7 +14,6 @@ void setConsoleColor(WORD color) {
     SetConsoleTextAttribute(hConsole, color);
 }
 
-
 Terminal::Terminal()
     : running(false),
       commandParser(std::make_unique<CommandParser>()),
@@ -22,7 +21,6 @@ Terminal::Terminal()
     initializeCommands();
 }
 
-// Add this after the constructor
 Terminal::~Terminal() = default;
 
 void Terminal::start() {
@@ -42,7 +40,15 @@ void Terminal::start() {
         // Read input character by character
         std::string input;
         char ch;
-        while ((ch = _getch()) != '\r') { // Read until Enter is pressed
+        while ((ch = _getch()) != '\r') {
+            // Handle escape sequences (e.g., arrow keys)
+            // Check for special keys (-32 or 0)
+            if (ch == -32 || ch == 0) {
+                // Discard the second byte of the sequence without displaying it
+                _getch();  // Read and discard the second byte
+                continue;  // Skip processing this special key
+            }
+
             if (ch == '\b') { // Handle backspace
                 if (!input.empty()) {
                     input.pop_back();
