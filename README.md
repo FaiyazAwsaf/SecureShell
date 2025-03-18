@@ -158,6 +158,13 @@ cat file.txt
   -GCC/Clang: Compilers used for building the C++ code.
 
   -Version Control: Git
+  
+# Developers
+This project was developed by:
 
+- [Faiyaz Ahmad Awsaf](https://github.com/FaiyazAwsaf)
+- [Mashrur Faiyaz](https://github.com/lemurz)
+- [Md. Sadman Mubasshir Khan](https://github.com/mksadman)
+- [Nanziba Razin Samita](https://github.com/NanzibaSamita)
 
 
