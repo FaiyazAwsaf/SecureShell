@@ -1,8 +1,9 @@
-#include <iostream>
 #include "TestFramework.h"
 #include "terminal/CommandImplementationTest.cpp"
 #include "terminal/CompileAndRunTest.cpp"
 #include "terminal/CommandParserTest.cpp"
+#include "terminal/TerminalTest.cpp"
+#include "LauncherTest.cpp"
 
 int main(){
     TestSuite masterSuite;
@@ -33,6 +34,13 @@ int main(){
     masterSuite.addTest("Get Command List Test", CommandParserTest::testGetCommandList); //failed
     masterSuite.addTest("Split String Test", CommandParserTest::testSplitString); //failed
     masterSuite.addTest("Initialize Default Commands Test", CommandParserTest::testInitializeDefaultCommands);
+
+    masterSuite.addTest("Terminal Running State Test", TerminalTest::testTerminalRunningState);
+
+    masterSuite.addTest("Set Console Color Test", LauncherTest::testSetConsoleColor);
+    masterSuite.addTest("Get Available Drive Test", LauncherTest::testGetAvailableDrive);
+    masterSuite.addTest("Create Process Test", LauncherTest::testCreateProcess);
+    masterSuite.addTest("Process Creation Failure Test", LauncherTest::testProcessCreationFailure);
 
     masterSuite.runAll();
 
