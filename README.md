@@ -41,3 +41,42 @@ SecureShell Terminal was born out of our interest for cybersecurity and the desi
 ## Cross-Platform Support:
 
 - Designed to work on both Windows and Unix-based systems.
+
+# Installation
+To run SecureShell Terminal on your local machine, follow these steps:
+
+## 1. Prerequisites:
+- Ensure you have a C++ compiler installed (e.g., GCC, Clang, or MSVC).
+- Install [CMake](https://cmake.org/) (version 3.10 or higher).
+
+## 2. Clone the Repository:
+```bash
+git clone https://github.com/your-username/SecureShell-Terminal.git
+cd SecureShell-Terminal
+
+```
+
+## 3. Build the Project
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+## 4. Run the Application:
+
+On Windows
+
+```bash
+SecureShell.exe
+```
+
+On Unix-based systems:
+
+```bash
+./SecureShell
+```
+
+
