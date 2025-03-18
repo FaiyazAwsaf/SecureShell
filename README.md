@@ -91,30 +91,30 @@ Use the ls command to list files and directories in the current folder.
  ```bash
   ls /path/to/directory
   ```
-- #####Change Directory:
+- ##### Change Directory:
 Use the cd command to navigate to a different directory.
 ```bash
 cd /path/to/directory
 ```
 
-- #####Create a Directory:
+- ##### Create a Directory:
 Use the dcreate command to create a new directory.
 ```bash
 dcreate new_directory
 ```
-- #####Copy Files:
+- ##### Copy Files:
 Use the copy command to copy a file from one location to another.
 ```bash
 copy source.txt destination.txt
 ```
 
-- #####Move Files:
+- ##### Move Files:
 Use the move command to move a file to a new location.
 
  ```bash
 move source.txt /new/location/
  ```
-- #####Remove Files or Directories:
+- ##### Remove Files or Directories:
 Use the remove command to delete a file or directory.
 
  ```bash
