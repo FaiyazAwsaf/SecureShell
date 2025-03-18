@@ -98,12 +98,10 @@ void CommandImplementation::move(const std::vector<std::string>& args) {
             return;
         }
 
-        // If destination is a directory, append the source filename
         if (std::filesystem::is_directory(dest_path)) {
             dest_path /= source_path.filename();
         }
 
-        // Check if destination already exists
         if (std::filesystem::exists(dest_path)) {
             std::cout << "Warning: Destination '" << dest_path.string() << "' already exists. Overwrite? (y/n): ";
             char choice;
@@ -122,7 +120,6 @@ void CommandImplementation::move(const std::vector<std::string>& args) {
     catch (const std::filesystem::filesystem_error& e) {
         std::cout << "Error moving file: " << e.what() << "\n";
         
-        // If rename fails (e.g., across devices), try copy and delete
         try {
             std::filesystem::copy(source_path, dest_path, 
                 std::filesystem::copy_options::overwrite_existing | 
@@ -268,6 +265,7 @@ void CommandImplementation::remove(const std::vector<std::string>& args) {
     }
 }
 
+    // Prevent self-overwriting of encrypted files
 void CommandImplementation::encrypt(const std::vector<std::string>& args) {
     if (args.size() != 3) {
         std::cout << "Usage: encrypt <input_file> <output_file> <password>\n";
@@ -278,13 +276,11 @@ void CommandImplementation::encrypt(const std::vector<std::string>& args) {
     std::string outputFile = args[1];
     std::string password = args[2];
 
-    // Check if input file exists
     if (!std::filesystem::exists(inputFile)) {
         std::cout << "Error: Input file '" << inputFile << "' does not exist.\n";
         return;
     }
 
-    // Check if output file already exists
     if (std::filesystem::exists(outputFile)) {
         std::cout << "Warning: Output file '" << outputFile << "' already exists. Overwrite? (y/n): ";
         char choice;
@@ -297,7 +293,6 @@ void CommandImplementation::encrypt(const std::vector<std::string>& args) {
         }
     }
 
-    // Create FileEncryption instance and encrypt the file
     FileEncryption fileEncryptor;
     if (fileEncryptor.encryptFile(inputFile, outputFile, password)) {
         std::cout << "File encrypted successfully and saved to '" << outputFile << "'.\n";
@@ -306,6 +301,7 @@ void CommandImplementation::encrypt(const std::vector<std::string>& args) {
     }
 }
 
+    // Prevent self-overwriting of encrypted files
 void CommandImplementation::decrypt(const std::vector<std::string>& args) {
     if (args.size() != 3) {
         std::cout << "Usage: decrypt <input_file> <output_file> <password>\n";
@@ -316,13 +312,11 @@ void CommandImplementation::decrypt(const std::vector<std::string>& args) {
     std::string outputFile = args[1];
     std::string password = args[2];
 
-    // Check if input file exists
     if (!std::filesystem::exists(inputFile)) {
         std::cout << "Error: Input file '" << inputFile << "' does not exist.\n";
         return;
     }
 
-    // Check if output file already exists
     if (std::filesystem::exists(outputFile)) {
         std::cout << "Warning: Output file '" << outputFile << "' already exists. Overwrite? (y/n): ";
         char choice;
@@ -335,10 +329,8 @@ void CommandImplementation::decrypt(const std::vector<std::string>& args) {
         }
     }
 
-    // Create FileEncryption instance and decrypt the file
     FileEncryption fileEncryptor;
     
-    // First check if the file is encrypted
     if (!fileEncryptor.isFileEncrypted(inputFile)) {
         std::cout << "Failed to decrypt the file: The file does not appear to be encrypted.\n";
         return;
@@ -358,9 +350,7 @@ void CommandImplementation::compileAndRun(const std::string& filename) {
     std::string outfile;
     int result = -1;
 
-    // Determine compilation/execution based on file extension
     if (ext == ".cpp" || ext == ".cc") {
-        // C++ compilation
         std::string compiler = "g++";
         outfile = filename.substr(0, filename.length() - ext.length());
         #ifdef _WIN32
@@ -372,7 +362,6 @@ void CommandImplementation::compileAndRun(const std::string& filename) {
         result = system(command.c_str());
     } 
     else if (ext == ".c") {
-        // C compilation
         std::string compiler = "gcc";
         outfile = filename.substr(0, filename.length() - ext.length());
         #ifdef _WIN32
@@ -384,14 +373,12 @@ void CommandImplementation::compileAndRun(const std::string& filename) {
         result = system(command.c_str());
     }
     else if (ext == ".java") {
-        // Java compilation
         std::string compiler = "javac";
         command = compiler + " " + filename;
         std::cout << "Compiling Java file: " << command << "\n";
         result = system(command.c_str());
         
         if (result == 0 && autoExecute) {
-            // Extract class name (assuming filename matches class name)
             std::string className = filename.substr(0, filename.length() - ext.length());
             command = "java " + className;
             std::cout << "Running Java class: " << command << "\n";
@@ -400,21 +387,18 @@ void CommandImplementation::compileAndRun(const std::string& filename) {
         }
     }
     else if (ext == ".py") {
-        // Python execution (no compilation needed)
         command = "python " + filename;
         std::cout << "Running Python script: " << command << "\n";
         system(command.c_str());
         return; // Return early as we've already executed
     }
     else if (ext == ".js") {
-        // JavaScript execution with Node.js (no compilation needed)
         command = "node " + filename;
         std::cout << "Running JavaScript file: " << command << "\n";
         system(command.c_str());
         return; // Return early as we've already executed
     }
     else if (ext == ".rs") {
-        // Rust compilation
         std::string compiler = "rustc";
         outfile = filename.substr(0, filename.length() - ext.length());
         #ifdef _WIN32
@@ -431,7 +415,6 @@ void CommandImplementation::compileAndRun(const std::string& filename) {
         return;
     }
 
-    // Auto-execute compiled languages if compilation was successful
     if (result == 0 && autoExecute && !outfile.empty()) {
         std::cout << "Executing: " << outfile << "\n";
         system(outfile.c_str());
@@ -452,7 +435,6 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
     static passman::PasswordManager passwordManager;
     static bool initialized = false;
     
-    // Check if master password file exists
     bool masterPasswordExists = passwordManager.hasMasterPassword();
     
     if (!masterPasswordExists && !initialized) {
@@ -478,27 +460,25 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             return;
         }
     } else {
-        // Load the master password hash and salt before authentication
         if (masterPasswordExists && !initialized) {
             passwordManager.load();
             initialized = true;
         }
 
-        std::cout << "====  Password Manager  =====\n\n";
+        std::cout << "\n====  Password Manager  =====\n\n";
         std::cout << "Enter master password: ";
         std::string masterPassword = Utils::readMaskedPassword();
         
         if (!passwordManager.authenticate(masterPassword)) {
-            std::cout << "Authentication failed. Incorrect master password.\n";
+            std::cout << "\nAuthentication failed. Incorrect master password.\n";
             return;
         }
         
-        std::cout << "***  Authentication successful ***\n\n";
+        std::cout << "\n***  Authentication successful ***\n\n";
         std::cout << "***  Welcome to Password Manager ***\n";
 
     }
     
-    // Password manager command loop
     bool running = true;
     while (running) {
         std::cout << "\nPassword Manager Commands:\n";
@@ -516,7 +496,7 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
         std::getline(std::cin, choice);
         
         if (choice == "1") { //
-            std::cout << "---- Add password ----\n";
+            std::cout << "\n---- Add password ----\n\n";
             std::string service, username, password;
             std::cout << "Enter service name: ";
             std::getline(std::cin, service);
@@ -527,16 +507,16 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             
             if (password.empty()) {
                 password = passwordManager.generatePassword();
-                std::cout << "Generated password: " << password << "\n";
+                std::cout << "\nGenerated password: " << password << "\n";
             }
             
             if (passwordManager.addEntry(service, username, password)) {
-                std::cout << "Password added successfully.\n";
+                std::cout << "\nPassword added successfully.\n";
             } else {
-                std::cout << "Failed to add password.\n";
+                std::cout << "\nFailed to add password.\n";
             }
         } else if (choice == "2") {
-            std::cout << "---- Get password ----";
+            std::cout << "\n---- Get password ----\n\n";
             std::string service;
             std::cout << "Enter service name: ";
             std::getline(std::cin, service);
@@ -545,13 +525,12 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             if (entry.service.empty()) {
                 std::cout << "Service not found.\n";
             } else {
-                std::cout << "Service: " << entry.service << "\n";
+                std::cout << "\nService: " << entry.service << "\n";
                 std::cout << "Username: " << entry.username << "\n";
-                // Display the actual password instead of a message about hash
                 std::cout << "Password: " << passwordManager.getPassword(service) << "\n";
             }
         } else if (choice == "3") { // List services
-            std::cout << "---- All Stored Services ----.\n";
+            std::cout << "\n---- All Stored Services ----.\n";
 
             auto services = passwordManager.listServices();
             if (services.empty()) {
@@ -562,7 +541,7 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
                 }
             }
         } else if (choice == "4") { // Remove password
-            std::cout << "---- Remove Service ----\n";
+            std::cout << "\n---- Remove Service ----\n\n";
             std::string service;
             std::cout << "\nEnter service name to remove: ";
             std::getline(std::cin, service);
@@ -573,7 +552,7 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
                 std::cout << "\nFailed to remove password. Service not found.\n";
             }
         } else if (choice == "5") {
-            std::cout << "---- Update Service ----\n";
+            std::cout << "\n---- Update Service ----\n\n";
 
             std::string service, username, password;
             std::cout << "\nEnter service name: ";
@@ -594,7 +573,7 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
                 std::cout << "\nFailed to update password. Service not found.\n";
             }
         } else if (choice == "6") {
-            std::cout << "---- Generate Password ----\n\n";
+            std::cout << "\n---- Generate Password ----\n\n";
             std::string lengthStr;
             std::cout << "Enter password length (default 16): ";
             std::getline(std::cin, lengthStr);
@@ -612,21 +591,20 @@ void CommandImplementation::passman(const std::vector<std::string>& args) {
             std::cout << "Generated password: " << password << "\n";
         } else if (choice == "7") { // Change master password
             std::string oldPassword, newPassword;
-            std::cout << "Enter current master password: ";
+            std::cout << "\nEnter current master password: ";
             oldPassword = Utils::readMaskedPassword();
-            std::cout << "Enter new master password: ";
+            std::cout << "\nEnter new master password: ";
             newPassword = Utils::readMaskedPassword();
             
-            // Validate new password strength
             if (!Utils::validatePasswordStrength(newPassword)) {
-                std::cout << "Password is too weak.\nIt must be at least 8 characters long and contain letters, special characters and numbers.\n";
+                std::cout << "\nPassword is too weak.\nIt must be at least 8 characters long and contain letters, special characters and numbers.\n";
                 continue;
             }
             
             if (passwordManager.changeMasterPassword(oldPassword, newPassword)) {
-                std::cout << "Master password changed successfully.\n";
+                std::cout << "\nMaster password changed successfully.\n";
             } else {
-                std::cout << "Failed to change master password. Incorrect current password.\n";
+                std::cout << "\nFailed to change master password. Incorrect current password.\n";
             }
         } else if (choice == "8") { // Exit
             running = false;

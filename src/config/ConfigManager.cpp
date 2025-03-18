@@ -3,10 +3,8 @@
 #include <sstream>
 
 ConfigManager::ConfigManager() {
-    // Set default values
     defaultCompiler = "g++";
     autoExecute = true;
-    settings["password_storage"] = "encrypted";
 }
 
 bool ConfigManager::loadConfig(const std::string& configFile) {

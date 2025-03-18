@@ -5,10 +5,9 @@
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
-#include <conio.h> // For _getch()
-#include <windows.h> // For Windows console color
+#include <conio.h>
+#include <windows.h>
 
-// Function to set console text color
 void setConsoleColor(WORD color) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, color);
@@ -26,25 +25,22 @@ Terminal::~Terminal() = default;
 void Terminal::start() {
     running = true;
 
-    // Set welcome message color to green
     setConsoleColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     std::cout << "-------------Welcome to SecureShell Terminal!-------------\n\n";
     std::cout << "Type 'help' for a list of available commands.\n\n";
 
-    // Reset the text color to default (gray)
     setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
     while (running) {
+    // Modified prompt display for shell mode compatibility
         displayPrompt();
 
-        // Read input character by character
         std::string input;
         char ch;
+    // Fixed input handling to properly manage arrow keys
         while ((ch = _getch()) != '\r') {
-            // Handle escape sequences (e.g., arrow keys)
-            // Check for special keys (-32 or 0)
             if (ch == -32 || ch == 0) {
-                // Discard the second byte of the sequence without displaying it
+    // Fixed input handling to properly manage arrow keys
                 _getch();  // Read and discard the second byte
                 continue;  // Skip processing this special key
             }
@@ -57,7 +53,6 @@ void Terminal::start() {
             } else {
                 input += ch;
 
-                // Check if the input matches a command
                 bool isCommand = false;
                 for (const auto& cmd : commandParser->getCommandList()) {
                     if (input == cmd.first.substr(0, input.length())) {
@@ -66,7 +61,6 @@ void Terminal::start() {
                     }
                 }
 
-                // Set color based on whether the input is a command
                 if (isCommand) {
                     setConsoleColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY); // Blue for commands
                 } else {
@@ -77,7 +71,6 @@ void Terminal::start() {
             }
         }
 
-        // Reset color to default after input is complete
         setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
         std::cout << std::endl;
 
@@ -102,7 +95,6 @@ void Terminal::processCommand(const std::string& input) {
     std::string command = tokens[0];
     std::vector<std::string> args(tokens.begin() + 1, tokens.end());
 
-    // Check for aliases
     auto aliasIt = aliases.find(command);
     if (aliasIt != aliases.end()) {
         command = aliasIt->second;
@@ -116,7 +108,7 @@ void Terminal::initializeCommands() {
     commandParser->registerCommand("exit", [this](const auto& args) { commandImpl->exit(); });
     commandParser->registerCommand("cd", [this](const auto& args) { commandImpl->cd(args); });
     commandParser->registerCommand("ls", [this](const auto& args) { commandImpl->ls(args); });
-    commandParser->registerCommand("compile", [this](const auto& args) { commandImpl->compile(args); });
+    commandParser->registerCommand("run", [this](const auto& args) { commandImpl->compile(args); });
     commandParser->registerCommand("passman", [this](const auto& args) { commandImpl->passman(args); });
     commandParser->registerCommand("copy", [this](const auto& args) { commandImpl->copy(args); });
     commandParser->registerCommand("move", [this](const auto& args) { commandImpl->move(args); });
@@ -137,6 +129,7 @@ void Terminal::initializeCommands() {
     commandParser->registerCommand("stat", [this](const auto& args){ commandImpl->stat(args);});
 }
 
+    // Modified prompt display for shell mode compatibility
 void Terminal::displayPrompt() const {
     std::cout << std::filesystem::current_path().string() << "> ";
 }

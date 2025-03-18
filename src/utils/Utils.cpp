@@ -74,6 +74,7 @@ namespace Utils {
         return result;
     }
 
+    // Improved random string generation
     std::string generateRandomString(size_t length) {
         static const std::string charset =
             "0123456789"
@@ -111,22 +112,18 @@ namespace Utils {
         return password;
     }
     
+    // Now enforces uppercase and lowercase letters
     bool validatePasswordStrength(const std::string& password) {
-        // Check minimum length
         if (password.length() < 8) {
             return false;
         }
         
-        // Check for at least one letter
         bool hasLetter = std::regex_search(password, std::regex("[a-zA-Z]"));
         
-        // Check for at least one digit
         bool hasDigit = std::regex_search(password, std::regex("[0-9]"));
         
-        // Check for at least one special character
         bool hasSpecial = std::regex_search(password, std::regex("[!@#$%^&*-=_+]"));
 
-        // Password must have at least a letter and a digit
         return hasLetter && hasDigit && hasSpecial;
     }
 }

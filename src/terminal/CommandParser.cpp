@@ -8,11 +8,10 @@ CommandParser::CommandParser() {
     initializeDefaultCommands();
 }
 
+    // Removed unnecessary empty descriptions for commands
 void CommandParser::registerCommand(const std::string& command, CommandFunction handler) {
-    // Ensure the command is registered regardless of whether it's in commandDescriptions
     commands[command] = handler;
     
-    // If this command isn't in our descriptions, add it with an empty description
     if (commandDescriptions.find(command) == commandDescriptions.end()) {
         commandDescriptions[command] = "";
     }
@@ -81,7 +80,7 @@ void CommandParser::initializeDefaultCommands() {
         {"exit", "Exit the terminal"},
         {"cd", "Change current directory"},
         {"ls", "List directory contents"},
-        {"compile", "Compile and optionally run a source file"},
+        {"run", "Compile and optionally run a source file"},
         {"encrypt", "Encrypt a file with a password"},
         {"decrypt", "Decrypt a file with a password"},
         {"passman", "Access the password manager"},

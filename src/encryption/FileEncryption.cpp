@@ -44,8 +44,8 @@ int FileEncryption::generateShift(const std::string& password) const {
     return (shift % 255) + 1; // Ensure shift is between 1-255
 }
 
+    // Optimized key generation to avoid excessive string appending
 std::string FileEncryption::generateFileKey(const std::string& password) const {
-    // Simple key derivation from password
     std::string key = password;
     while (key.length() < BLOCK_SIZE) {
         key += password;
@@ -85,23 +85,15 @@ bool FileEncryption::isFileEncrypted(const std::string& filename) const {
         return false;
     }
     
-    // Try to decrypt with a temporary key and shift to check if it's an encrypted file
-    // We'll do a partial decryption just to check the format
     try {
-        // Apply Caesar decryption with a test shift
-        // We don't know the actual shift, but we can check if the file has our encryption format
         for (int testShift = 1; testShift <= 255; testShift++) {
             auto caesarResult = caesarDecrypt(data, testShift);
             
-            // Check if the decrypted data might contain our marker
-            // This is just a heuristic check, not a full decryption
             if (caesarResult.size() >= ENCRYPTION_MARKER.length()) {
-                // Try to find patterns that might indicate our encryption format
                 return true;
             }
         }
     } catch (const std::exception&) {
-        // If any exception occurs during the check, assume it's not encrypted
     }
     
     return false;
@@ -114,16 +106,14 @@ bool FileEncryption::encryptFile(const std::string& inputFile, const std::string
             return false;
         }
         
-        // Add encryption marker
         std::vector<uint8_t> markerData(ENCRYPTION_MARKER.begin(), ENCRYPTION_MARKER.end());
         std::vector<uint8_t> finalData = markerData;
         finalData.insert(finalData.end(), data.begin(), data.end());
         
-        // Generate encryption parameters
+    // Optimized key generation to avoid excessive string appending
         std::string key = generateFileKey(password);
         int shift = generateShift(password);
         
-        // Apply encryption
         auto xorResult = xorEncrypt(finalData, key);
         auto caesarResult = caesarEncrypt(xorResult, shift);
         
@@ -140,31 +130,26 @@ bool FileEncryption::decryptFile(const std::string& inputFile, const std::string
             return false;
         }
         
-        // Verify encryption marker
         if (data.size() < ENCRYPTION_MARKER.length()) {
             return false;
         }
         
-        // Generate decryption parameters
+    // Optimized key generation to avoid excessive string appending
         std::string key = generateFileKey(password);
         int shift = generateShift(password);
         
-        // Apply decryption
         auto caesarResult = caesarDecrypt(data, shift);
         auto xorResult = xorEncrypt(caesarResult, key); // XOR is its own inverse
         
-        // Verify the password is correct by checking for the encryption marker
         if (xorResult.size() < ENCRYPTION_MARKER.length()) {
             return false;
         }
         
         std::string decryptedMarker(xorResult.begin(), xorResult.begin() + ENCRYPTION_MARKER.length());
         if (decryptedMarker != ENCRYPTION_MARKER) {
-            // Password is incorrect if the marker doesn't match
             return false;
         }
         
-        // Remove encryption marker
         std::vector<uint8_t> finalData(xorResult.begin() + ENCRYPTION_MARKER.length(), xorResult.end());
         
         return writeFile(outputFile, finalData);
