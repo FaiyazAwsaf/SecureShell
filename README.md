@@ -45,7 +45,7 @@ SecureShell Terminal was born out of our interest for cybersecurity and the desi
 # Installation
 To run SecureShell Terminal on your local machine, follow these steps:
 
-## 1. Prerequisites:
+### 1. Prerequisites:
 - Ensure you have a C++ compiler installed (e.g., GCC, Clang, or MSVC).
 - Install [CMake](https://cmake.org/) (version 3.10 or higher).
 
