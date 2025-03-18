@@ -33,18 +33,18 @@ class TestSuite{
                 bool result = test.testFunc();
 
                 if(result){
-                    std::cout<<"PASSED"<<std::endl;
+                    std::cout<<"PASSED\n"<<std::endl;
                     passed++;
                 }
                 else{
-                    std::cout<<"FAILED"<<std::endl;
+                    std::cout<<"FAILED\n"<<std::endl;
                     failed++;
                 }
             }
             
             std::cout<<"Test Summary : "<<std::endl;
             std::cout<<passed<<"/"<<tests.size()<<" tests passed"<<std::endl;
-            std::cout<<failed<<" tests failed"<<std::endl;
+            std::cout<<failed<<" tests failed\n"<<std::endl;
         }
 };
 
