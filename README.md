@@ -49,14 +49,14 @@ To run SecureShell Terminal on your local machine, follow these steps:
 - Ensure you have a C++ compiler installed (e.g., GCC, Clang, or MSVC).
 - Install [CMake](https://cmake.org/) (version 3.10 or higher).
 
-## 2. Clone the Repository:
+### 2. Clone the Repository:
 ```bash
 git clone https://github.com/your-username/SecureShell-Terminal.git
 cd SecureShell-Terminal
 
 ```
 
-## 3. Build the Project
+### 3. Build the Project
 
 ```bash
 mkdir build
@@ -65,7 +65,7 @@ cmake ..
 make
 ```
 
-## 4. Run the Application:
+### 4. Run the Application:
 
 On Windows
 
