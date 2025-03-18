@@ -134,5 +134,30 @@ grep "pattern" file.txt
 cat file.txt
 ```
 
+# Tools and Technologies
+- Programming Language: C++
+
+- Libraries:
+
+  -C++ Standard Library: For file handling, string manipulation, and data structures.
+
+  -Filesystem Library: For cross-platform file and directory operations.
+
+  -Windows API: For console manipulation and process creation on Windows.
+
+-Encryption:
+
+  -Custom encryption algorithms (XOR and Caesar cipher).
+
+  -Secure hashing and salting for password management.
+
+Build Tools:
+
+  -CMake: For building the project across different platforms.
+
+  -GCC/Clang: Compilers used for building the C++ code.
+
+  -Version Control: Git
+
 
 
