@@ -145,13 +145,13 @@ cat file.txt
 
   -Windows API: For console manipulation and process creation on Windows.
 
--Encryption:
+- Encryption:
 
   -Custom encryption algorithms (XOR and Caesar cipher).
 
   -Secure hashing and salting for password management.
 
-Build Tools:
+- Build Tools:
 
   -CMake: For building the project across different platforms.
 
