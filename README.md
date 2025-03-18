@@ -106,7 +106,7 @@ copy source.txt destination.txt
 decrypt output.enc decrypted.txt mypassword
 ```  
 
-### Password Manager :
+### 3.Password Manager :
 
 - Access the password manager using the passman command.
 - Add, retrieve, update, and remove passwords for various services.
@@ -116,7 +116,7 @@ passman
 ```
 Follow the on-screen instructions to manage your passwords.
 
-### System Information:
+### 4.System Information:
 
 Retrieve system information using the sysinfo command:
 
@@ -124,7 +124,7 @@ Retrieve system information using the sysinfo command:
 sysinfo
 ```
 
-### Custom Commands:
+### 5.Custom Commands:
 
 - Use commands like grep, cat, head, tree, and find for advanced file operations.
 - Example :
