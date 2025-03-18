@@ -94,7 +94,7 @@ void FileOperations::move(const std::vector<std::string>& args) {
             std::cout << "Warning: Destination '" << dest_path.string() << "' already exists. Overwrite? (y/n): ";
             char choice;
             std::cin >> choice;
-            std::cin.ignore();
+            std::cin.ignore(); // Clear the newline
 
             if (tolower(choice) != 'y') {
                 std::cout << "Move operation cancelled.\n";
@@ -316,7 +316,7 @@ void FileOperations::head(const std::vector<std::string>& args) {
     }
 
     std::string filename = args[0];
-    int numLines = 10;
+    int numLines = 10; // Default to 10 lines
 
     if (args.size() > 1) {
         try {
@@ -448,7 +448,7 @@ void FileOperations::stat(const std::vector<std::string>& args) {
         std::cout << "Size: " << fileSize << " bytes\n";
         std::cout << "Type: " << (std::filesystem::is_directory(filename) ? "Directory" : 
                                  std::filesystem::is_regular_file(filename) ? "Regular File" : "Other") << "\n";
-
+        
         std::cout << "Permissions: ";
         display_permission(std::vector<std::string>{filename});
     } catch (const std::exception& e) {
