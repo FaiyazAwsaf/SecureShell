@@ -167,4 +167,16 @@ This project was developed by:
 - [Md. Sadman Mubasshir Khan](https://github.com/mksadman)
 - [Nanziba Razin Samita](https://github.com/NanzibaSamita)
 
+zThis project was developed by us for the Software Project Lab 1 (SWE 4301) during the 3rd semester at the Islamic University of Technology(IUT).
+
+# Supervised by
+
+### Ishmam Tashdeed 
+
+Lecturer
+
+Department of Computer Science and Engineering
+
+Islamic University of Technology
+
 
