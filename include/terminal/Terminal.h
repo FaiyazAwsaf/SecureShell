@@ -11,6 +11,7 @@ class CommandImplementation;
 class Terminal {
     friend class
     CommandImplementationTest;
+    friend class CompileAndRunTest;
 public:
     Terminal();
     ~Terminal();  // Remove =default and move to cpp file

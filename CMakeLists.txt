@@ -67,7 +67,8 @@ target_link_libraries(SecureShell
 add_executable(SecureShellLauncher src/launcher.cpp)
 
 # Add test executable
-add_executable(command_tests tests/TestMain.cpp)
+add_executable(command_tests tests/TestMain.cpp
+        tests/terminal/CompileAndRunTest.cpp)
 
 # Link test executable
 target_link_libraries(command_tests

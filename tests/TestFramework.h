@@ -21,7 +21,7 @@ class TestSuite{
         }
 
         void runAll(){
-            std::cout<<"\n Running all tests... \n";
+            std::cout<<"\nRunning all tests... \n";
 
             int passed = 0;
             int failed = 0;
