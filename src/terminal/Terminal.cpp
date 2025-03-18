@@ -1,7 +1,7 @@
 #include "terminal/Terminal.h"
 #include "utils/Utils.h"
 #include "passman/PasswordManager.h"
-#include "terminal/CommandImplementation.h"  // Add this include
+#include "terminal/CommandImplementation.h"
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
@@ -32,23 +32,20 @@ void Terminal::start() {
     setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
     while (running) {
-    // Modified prompt display for shell mode compatibility
         displayPrompt();
 
         std::string input;
         char ch;
-    // Fixed input handling to properly manage arrow keys
         while ((ch = _getch()) != '\r') {
             if (ch == -32 || ch == 0) {
-    // Fixed input handling to properly manage arrow keys
-                _getch();  // Read and discard the second byte
-                continue;  // Skip processing this special key
+                _getch();
+                continue;
             }
 
-            if (ch == '\b') { // Handle backspace
+            if (ch == '\b') {
                 if (!input.empty()) {
                     input.pop_back();
-                    std::cout << "\b \b"; // Move cursor back, overwrite with space, move back again
+                    std::cout << "\b \b";
                 }
             } else {
                 input += ch;
@@ -62,12 +59,12 @@ void Terminal::start() {
                 }
 
                 if (isCommand) {
-                    setConsoleColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY); // Blue for commands
+                    setConsoleColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
                 } else {
-                    setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // Default color
+                    setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
                 }
 
-                std::cout << ch; // Print the character
+                std::cout << ch;
             }
         }
 
@@ -129,7 +126,6 @@ void Terminal::initializeCommands() {
     commandParser->registerCommand("stat", [this](const auto& args){ commandImpl->stat(args);});
 }
 
-    // Modified prompt display for shell mode compatibility
 void Terminal::displayPrompt() const {
     std::cout << std::filesystem::current_path().string() << "> ";
 }
