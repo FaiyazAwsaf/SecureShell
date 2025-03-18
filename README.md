@@ -7,20 +7,20 @@ SecureShell Terminal was born out of our interest for cybersecurity and the desi
 
 # Key Features
 
-## File and Directory Management:
+### File and Directory Management:
 - Create, copy, move, rename, and delete files and directories.
 
 - List directory contents and display file permissions.
 
 - Navigate through directories using the cd command.
   
- ## Encryption and Decryption:
+ ### Encryption and Decryption:
 
 - Secure file encryption and decryption using custom algorithms.
 
 - Password-based encryption for sensitive files.
 
-## Password Manager:
+### Password Manager:
 
 - Secure storage and retrieval of passwords.
 
@@ -28,17 +28,17 @@ SecureShell Terminal was born out of our interest for cybersecurity and the desi
 
 - Password generation and management for various services.
 
-## System Information:
+### System Information:
 
 - Commands to retrieve system information (CPU, memory, OS details).
 
-## Custom Commands:
+### Custom Commands:
 
 - Support for custom commands like grep, cat, head, tree, and find.
 
 - Compile and run code files directly from the terminal.
 
-## Cross-Platform Support:
+### Cross-Platform Support:
 
 - Designed to work on both Windows and Unix-based systems.
 
@@ -78,5 +78,61 @@ On Unix-based systems:
 ```bash
 ./SecureShell
 ```
+
+#Usage
+
+## Main Features
+
+### 1.File Management:
+
+- Use commands like ls, cd, copy, move, and remove to manage files and directories.
+- Example:
+
+```bash
+ls /path/to/directory
+copy source.txt destination.txt
+```
+
+### 2.Encryption and Decryption:
+
+- Encrypt a file:
+
+```bash
+ encrypt input.txt output.enc mypassword
+```
+
+- Decrypt a file:
+```bash
+decrypt output.enc decrypted.txt mypassword
+```  
+
+### Password Manager :
+
+- Access the password manager using the passman command.
+- Add, retrieve, update, and remove passwords for various services.
+
+```bash
+passman
+```
+Follow the on-screen instructions to manage your passwords.
+
+### System Information:
+
+Retrieve system information using the sysinfo command:
+
+```bash
+sysinfo
+```
+
+### Custom Commands:
+
+- Use commands like grep, cat, head, tree, and find for advanced file operations.
+- Example :
+  
+```bash
+grep "pattern" file.txt
+cat file.txt
+```
+
 
 
