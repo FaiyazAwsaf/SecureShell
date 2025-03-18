@@ -31,12 +31,12 @@ int main() {
     ZeroMemory(&pi, sizeof(pi));
 
 
-    // Set the welcome message color to green
+
     setConsoleColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     std::cout << "-------------   Welcome to SecureShell Terminal   -------------\n\n";
     std::cout << "Type 'help' for a list of available commands.\n\n";
 
-    // Reset the text color to default (gray)
+
     setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
     std::string workingDirectory = getAvailableDrive();
