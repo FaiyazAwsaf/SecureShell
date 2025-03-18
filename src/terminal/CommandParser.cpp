@@ -85,11 +85,24 @@ void CommandParser::initializeDefaultCommands() {
         {"encrypt", "Encrypt a file with a password"},
         {"decrypt", "Decrypt a file with a password"},
         {"passman", "Access the password manager"},
-        {"alias", "Create or list command aliases"}
+        {"alias", "Create or list command aliases"},
+        {"copy", "Copy a file to another location"},
+        {"move", "Move a file to another location"},
+        {"rename", "Rename a file or directory"},
+        {"dcreate", "Create a new directory"},
+        {"fcreate", "Create a new file"},
+        {"remove", "Remove a file or directory"},
+        {"perm", "Display file permissions"},
+        {"curr", "Show current working directory"},
+        {"cat", "Display contents of a file"},
+        {"grep", "Search for a pattern in a file"},
+        {"head", "Display first lines of a file"},
+        {"tree", "Display directory structure as a tree"},
+        {"find", "Find files matching a pattern"},
+        {"sysinfo", "Display system information"},
+        {"stat", "Display file or directory status"},
     };
     
-    // Note: These are placeholder empty handlers.
-    // The actual implementations will be registered by Terminal class.
     for (const auto& [cmd, _] : commandDescriptions) {
         commands[cmd] = [](const std::vector<std::string>&) {};
     }
