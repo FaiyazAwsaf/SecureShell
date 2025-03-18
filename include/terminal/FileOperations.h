@@ -1,21 +1,14 @@
-#ifndef SECURESHELL_COMMANDIMPLEMENTATION_H
-#define SECURESHELL_COMMANDIMPLEMENTATION_H
+#pragma once
 
-#include "terminal/Terminal.h"
 #include "utils/Utils.h"
 #include <string>
 #include <vector>
+#include <filesystem>
 
-class FileOperations;
-class PasswordManagerOperations;
-
-class CommandImplementation {
+class FileOperations {
 public:
-    explicit CommandImplementation(Terminal& terminal);
-    ~CommandImplementation();
+    FileOperations();
     
-    void help() const;
-    void exit();
     void cd(const std::vector<std::string>& args);
     void ls(const std::vector<std::string>& args);
     void copy(const std::vector<std::string>& args);
@@ -32,18 +25,8 @@ public:
     void tree(const std::vector<std::string>& args);
     void find(const std::vector<std::string>& args);
     void stat(const std::vector<std::string>& args);
-    void compile(const std::vector<std::string>& args);
-    void passman(const std::vector<std::string>& args);
-    void encrypt(const std::vector<std::string>& args);
-    void decrypt(const std::vector<std::string>& args);
-    void system_info(const std::vector<std::string>& args);
 
 private:
-    Terminal& terminal;
-    FileOperations* fileOperations;
-    PasswordManagerOperations* passwordOperations;
-    void compileAndRun(const std::string& filename);
+    void printDirectoryTree(const std::string& path, const std::string& prefix, int maxDepth, int currentDepth);
+    void findFiles(const std::string& directory, const std::string& pattern);
 };
-
-
-#endif //SECURESHELL_COMMANDIMPLEMENTATION_H

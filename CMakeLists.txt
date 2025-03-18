@@ -17,6 +17,10 @@ add_executable(SecureShell
     src/encryption/FileEncryption.cpp
     src/config/ConfigManager.cpp
     src/utils/Utils.cpp
+        src/terminal/FileOperations.cpp
+        src/passman/PasswordManagerOperations.cpp
+        src/encryption/EncryptionHandler.cpp
+        src/utils/UtilsHelpers.cpp
 )
 
 # Add launcher application that creates a new window

@@ -1,56 +1,13 @@
 #include "encryption/FileEncryption.h"
+#include "encryption/EncryptionHandler.h"
 #include <fstream>
 #include <stdexcept>
 #include <vector>
 
-FileEncryption::FileEncryption() {}
+FileEncryption::FileEncryption() : encryptionHandler(new EncryptionHandler()) {}
 
-std::vector<uint8_t> FileEncryption::xorEncrypt(const std::vector<uint8_t>& data, const std::string& key) const {
-    std::vector<uint8_t> result = data;
-    const size_t keyLength = key.length();
-    
-    for (size_t i = 0; i < data.size(); ++i) {
-        result[i] = data[i] ^ static_cast<uint8_t>(key[i % keyLength]);
-    }
-    
-    return result;
-}
-
-std::vector<uint8_t> FileEncryption::caesarEncrypt(const std::vector<uint8_t>& data, int shift) const {
-    std::vector<uint8_t> result = data;
-    
-    for (size_t i = 0; i < data.size(); ++i) {
-        result[i] = static_cast<uint8_t>((static_cast<int>(data[i]) + shift) % 256);
-    }
-    
-    return result;
-}
-
-std::vector<uint8_t> FileEncryption::caesarDecrypt(const std::vector<uint8_t>& data, int shift) const {
-    std::vector<uint8_t> result = data;
-    
-    for (size_t i = 0; i < data.size(); ++i) {
-        result[i] = static_cast<uint8_t>((static_cast<int>(data[i]) - shift + 256) % 256);
-    }
-    
-    return result;
-}
-
-int FileEncryption::generateShift(const std::string& password) const {
-    int shift = 0;
-    for (char c : password) {
-        shift += static_cast<int>(c);
-    }
-    return (shift % 255) + 1; // Ensure shift is between 1-255
-}
-
-    // Optimized key generation to avoid excessive string appending
-std::string FileEncryption::generateFileKey(const std::string& password) const {
-    std::string key = password;
-    while (key.length() < BLOCK_SIZE) {
-        key += password;
-    }
-    return key.substr(0, BLOCK_SIZE);
+FileEncryption::~FileEncryption() {
+    delete encryptionHandler;
 }
 
 bool FileEncryption::readFile(const std::string& filename, std::vector<uint8_t>& data) const {
@@ -87,7 +44,7 @@ bool FileEncryption::isFileEncrypted(const std::string& filename) const {
     
     try {
         for (int testShift = 1; testShift <= 255; testShift++) {
-            auto caesarResult = caesarDecrypt(data, testShift);
+            auto caesarResult = encryptionHandler->caesarDecrypt(data, testShift);
             
             if (caesarResult.size() >= ENCRYPTION_MARKER.length()) {
                 return true;
@@ -110,12 +67,12 @@ bool FileEncryption::encryptFile(const std::string& inputFile, const std::string
         std::vector<uint8_t> finalData = markerData;
         finalData.insert(finalData.end(), data.begin(), data.end());
         
-    // Optimized key generation to avoid excessive string appending
-        std::string key = generateFileKey(password);
-        int shift = generateShift(password);
+        // Use EncryptionHandler for encryption operations
+        std::string key = encryptionHandler->generateFileKey(password, BLOCK_SIZE);
+        int shift = encryptionHandler->generateShift(password);
         
-        auto xorResult = xorEncrypt(finalData, key);
-        auto caesarResult = caesarEncrypt(xorResult, shift);
+        auto xorResult = encryptionHandler->xorEncrypt(finalData, key);
+        auto caesarResult = encryptionHandler->caesarEncrypt(xorResult, shift);
         
         return writeFile(outputFile, caesarResult);
     } catch (const std::exception& e) {
@@ -134,12 +91,12 @@ bool FileEncryption::decryptFile(const std::string& inputFile, const std::string
             return false;
         }
         
-    // Optimized key generation to avoid excessive string appending
-        std::string key = generateFileKey(password);
-        int shift = generateShift(password);
+        // Use EncryptionHandler for decryption operations
+        std::string key = encryptionHandler->generateFileKey(password, BLOCK_SIZE);
+        int shift = encryptionHandler->generateShift(password);
         
-        auto caesarResult = caesarDecrypt(data, shift);
-        auto xorResult = xorEncrypt(caesarResult, key); // XOR is its own inverse
+        auto caesarResult = encryptionHandler->caesarDecrypt(data, shift);
+        auto xorResult = encryptionHandler->xorEncrypt(caesarResult, key); // XOR is its own inverse
         
         if (xorResult.size() < ENCRYPTION_MARKER.length()) {
             return false;
