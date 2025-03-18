@@ -16,28 +16,28 @@ SecureShell Terminal was born out of our interest for cybersecurity and the desi
   
  ## Encryption and Decryption:
 
-Secure file encryption and decryption using custom algorithms.
+- Secure file encryption and decryption using custom algorithms.
 
-Password-based encryption for sensitive files.
+- Password-based encryption for sensitive files.
 
 ## Password Manager:
 
-Secure storage and retrieval of passwords.
+- Secure storage and retrieval of passwords.
 
-Master password protection with strong password validation.
+- Master password protection with strong password validation.
 
-Password generation and management for various services.
+- Password generation and management for various services.
 
 ## System Information:
 
-Commands to retrieve system information (CPU, memory, OS details).
+- Commands to retrieve system information (CPU, memory, OS details).
 
 ## Custom Commands:
 
-Support for custom commands like grep, cat, head, tree, and find.
+- Support for custom commands like grep, cat, head, tree, and find.
 
-Compile and run code files directly from the terminal.
+- Compile and run code files directly from the terminal.
 
 ## Cross-Platform Support:
 
-Designed to work on both Windows and Unix-based systems.
+- Designed to work on both Windows and Unix-based systems.
