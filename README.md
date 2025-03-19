@@ -70,12 +70,6 @@ On Windows
 SecureShell.exe
 ```
 
-On Unix-based systems:
-
-```bash
-./SecureShell
-```
-
 #Usage
 
 ## Main Features
