@@ -76,6 +76,46 @@ public:
         return true;
     }
 
+    static bool testGetCommandList() {
+        CommandParser parser;
+
+        auto commandList = parser.getCommandList();
+
+        ASSERT_TRUE(!commandList.empty());
+
+        bool hasHelp = false;
+        bool hasExit = false;
+
+        for (const auto& [cmd, desc] : commandList) {
+            if (cmd == "help") {
+                hasHelp = true;
+                ASSERT_EQUAL("Display this help message", desc);
+            }
+            if (cmd == "exit") {
+                hasExit = true;
+                ASSERT_EQUAL("Exit the terminal", desc);
+            }
+        }
+
+        ASSERT_TRUE(hasHelp);
+        ASSERT_TRUE(hasExit);
+
+        parser.registerCommand("newcmd", [](const std::vector<std::string>&) {});
+        commandList = parser.getCommandList();
+
+        bool hasNewCmd = false;
+        for (const auto& [cmd, desc] : commandList) {
+            if (cmd == "newcmd") {
+                hasNewCmd = true;
+                break;
+            }
+        }
+
+        ASSERT_TRUE(hasNewCmd);
+
+        return true;
+    }
+
     static bool testInitializeDefaultCommands() {
         CommandParser parser;
 
