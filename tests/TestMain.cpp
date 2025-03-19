@@ -3,7 +3,7 @@
 #include "terminal/CompileAndRunTest.cpp"
 #include "terminal/CommandParserTest.cpp"
 #include "terminal/TerminalTest.cpp"
-#include "LauncherTest.cpp"
+#include "launcher/LauncherTest.cpp"
 #include "encryption/FileEncryptionTest.cpp"
 
 int main(){

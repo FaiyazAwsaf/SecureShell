@@ -71,7 +71,7 @@ add_executable(command_tests tests/TestMain.cpp
         tests/terminal/CompileAndRunTest.cpp
         tests/terminal/CommandParserTest.cpp
         tests/terminal/TerminalTest.cpp
-        tests/LauncherTest.cpp)
+        tests/launcher/LauncherTest.cpp)
 
 # Link test executable
 target_link_libraries(command_tests
