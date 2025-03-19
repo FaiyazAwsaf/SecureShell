@@ -145,6 +145,9 @@ Use the passman command to access the password manager.
 passman
 ```
 
+![img](https://github.com/user-attachments/assets/ec011b5c-c95a-47bb-ad37-974ac0ce56b0)
+
+
 ### 4.System Information:
 
 Retrieve system information using the sysinfo command:
