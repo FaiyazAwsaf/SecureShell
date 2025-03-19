@@ -147,7 +147,7 @@ Retrieve system information using the sysinfo command:
 sysinfo
 ```
 
-### 5.Custom Commands:
+### 5.Advanced Commands:
 
 - Use commands like grep, cat, head, tree, and find for advanced file operations.
 - Example :
