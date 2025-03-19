@@ -275,6 +275,54 @@ void FileOperations::cat(const std::vector<std::string>& args) {
     file.close();
 }
 
+void FileOperations::write(const std::vector<std::string>& args) {
+    if (args.empty()) {
+        std::cout << "Usage: write <filename> [-a]\n";
+        std::cout << "Options:\n";
+        std::cout << "  -a    Append to file instead of overwriting\n";
+        return;
+    }
+
+    std::string filename = args[0];
+    bool appendMode = (args.size() > 1 && args[1] == "-a");
+    
+    std::ifstream checkFile(filename, std::ios::binary);
+    if (checkFile.is_open()) {
+        char buffer[1024];
+        checkFile.read(buffer, sizeof(buffer));
+        size_t bytesRead = checkFile.gcount();
+        for (size_t i = 0; i < bytesRead; ++i) {
+            if (buffer[i] == '\0') {
+                std::cout << "Warning: This appears to be a binary file. Continue? (y/n): ";
+                char choice;
+                std::cin >> choice;
+                std::cin.ignore();
+                if (tolower(choice) != 'y') {
+                    return;
+                }
+                break;
+            }
+        }
+        checkFile.close();
+    }
+
+    std::ofstream file(filename, appendMode ? std::ios::app : std::ios::out);
+    if (!file.is_open()) {
+        std::cout << "Error: Could not open file '" << filename << "' for writing\n";
+        return;
+    }
+
+    std::cout << "Enter content (press Ctrl+Z on Windows or Ctrl+D on Unix to finish):\n";
+    std::string line;
+    while (std::getline(std::cin, line)) {
+        file << line << "\n";
+    }
+
+    std::cin.clear(); 
+    file.close();
+    std::cout << "\nContent written to file successfully.\n";
+}
+
 void FileOperations::grep(const std::vector<std::string>& args) {
     if (args.size() < 2) {
         std::cout << "Usage: grep <pattern> <filename>\n";
