@@ -128,7 +128,7 @@ bool PasswordStorage::savePasswords(
     tempStream << stream.str();
     tempStream.close();
 
-    bool success = encryptor.encryptFile(tempFile, passwordFile, masterPasswordHash);
+    bool success = encryptor.encryptFile(tempFile, masterPasswordHash, passwordFile);
     
     std::remove(tempFile.c_str());
     

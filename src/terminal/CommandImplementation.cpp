@@ -98,7 +98,7 @@ void CommandImplementation::decrypt(const std::vector<std::string>& args) {
         return;
     }
     
-    if (fileEncryptor.decryptFile(inputFile, password, outputFile)) {
+    if (fileEncryptor.decryptFile(inputFile, outputFile, password)) {
         std::cout << "File decrypted successfully and saved to '" << outputFile << "'.\n";
     } else {
         std::cout << "File Decryption Unsuccessful: Incorrect Password\n";
