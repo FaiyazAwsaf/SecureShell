@@ -20,6 +20,7 @@ public:
     void get_current_directory(const std::vector<std::string>& args);
     void remove(const std::vector<std::string>& args);
     void cat(const std::vector<std::string>& args);
+    void write(const std::vector<std::string>& args);
     void grep(const std::vector<std::string>& args);
     void head(const std::vector<std::string>& args);
     void tree(const std::vector<std::string>& args);

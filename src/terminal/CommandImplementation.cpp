@@ -116,7 +116,7 @@ void CommandImplementation::create_file(const std::vector<std::string>& args) { 
 void CommandImplementation::display_permission(const std::vector<std::string>& args) { fileOperations->display_permission(args); }
 void CommandImplementation::get_current_directory(const std::vector<std::string>& args) { fileOperations->get_current_directory(args); }
 void CommandImplementation::remove(const std::vector<std::string>& args) { fileOperations->remove(args); }
-
+void CommandImplementation::write(const std::vector<std::string>& args) { fileOperations->write(args); }
 // Encryption methods have been implemented in the encrypt/decrypt methods at the top of the file
 
 void CommandImplementation::compileAndRun(const std::string& filename) {

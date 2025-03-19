@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <algorithm>
+#include <conio.h>
 
 FileOperations::FileOperations() {}
 
@@ -273,6 +274,48 @@ void FileOperations::cat(const std::vector<std::string>& args) {
     }
 
     file.close();
+}
+
+void FileOperations::write(const std::vector<std::string>& args) {
+    if (args.empty()) {
+        std::cout << "Usage: write <filename> [-a]\n";
+        return;
+    }
+
+    std::string filename = args[0];
+    bool appendMode = (args.size() > 1 && args[1] == "-a");
+    
+    std::ofstream file(filename, appendMode ? std::ios::app : std::ios::out);
+    if (!file.is_open()) {
+        std::cout << "Error: Could not open file '" << filename << "' for writing\n";
+        return;
+    }
+
+    std::cout << "Enter content (press Ctrl+Z to finish):\n";
+    std::string line;
+    int ch;
+    while ((ch = _getch()) != 26) { 
+        if (ch == '\r') {
+            std::cout << '\n';
+            file << line << '\n';
+            line.clear();
+        } else if (ch == '\b') {
+            if (!line.empty()) {
+                line.pop_back();
+                std::cout << "\b \b";
+            }
+        } else {
+            line += static_cast<char>(ch);
+            std::cout << static_cast<char>(ch);
+        }
+    }
+    
+    if (!line.empty()) {
+        file << line << '\n';
+    }
+    
+    file.close();
+    std::cout << "\nContent written to file successfully.\n";
 }
 
 void FileOperations::grep(const std::vector<std::string>& args) {
