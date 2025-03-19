@@ -15,7 +15,7 @@ PasswordStorage::PasswordStorage(const std::string& dataDir)
 bool PasswordStorage::loadMasterPassword(std::string& masterPasswordHash, std::string& masterSalt) const {
     std::ifstream masterFile(this->masterFile);
     if (!masterFile.is_open()) {
-        return false; // File doesn't exist or can't be opened
+        return false;
     }
     
     std::string storedHash, storedSalt;
@@ -128,11 +128,11 @@ bool PasswordStorage::savePasswords(
     tempStream << stream.str();
     tempStream.close();
 
-    bool success = encryptor.encryptFile(tempFile, passwordFile, masterPasswordHash);
+    bool success = encryptor.encryptFile(tempFile, masterPasswordHash, passwordFile);
     
     std::remove(tempFile.c_str());
     
     return success;
 }
 
-} // namespace passman
+}

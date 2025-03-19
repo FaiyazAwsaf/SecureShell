@@ -61,18 +61,18 @@ namespace Utils {
     std::string readMaskedPassword() {
         std::string password;
         char ch;
-        while ((ch = _getch()) != '\r') { // Read until Enter key is pressed
-            if (ch == '\b') { // Handle backspace
+        while ((ch = _getch()) != '\r') {
+            if (ch == '\b') {
                 if (!password.empty()) {
                     password.pop_back();
-                    std::cout << "\b \b"; // Erase the last * from console
+                    std::cout << "\b \b";
                 }
-            } else if (ch >= 32 && ch <= 126) { // Only accept printable characters
+            } else if (ch >= 32 && ch <= 126) {
                 password.push_back(ch);
-                std::cout << '*'; // Print * instead of the actual character
+                std::cout << '*';
             }
         }
-        std::cout << std::endl; // Move to next line after Enter is pressed
+        std::cout << std::endl;
         return password;
     }
     
