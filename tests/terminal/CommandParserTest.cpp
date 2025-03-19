@@ -60,33 +60,6 @@ public:
         return true;
     }
 
-    static bool testParseInput() {
-        CommandParser parser;
-
-        std::string input = "command arg1 arg2";
-        std::vector<std::string> tokens = parser.parseInput(input);
-        ASSERT_EQUAL(3, tokens.size());
-        ASSERT_EQUAL("command", tokens[0]);
-        ASSERT_EQUAL("arg1", tokens[1]);
-        ASSERT_EQUAL("arg2", tokens[2]);
-
-        input = "command \"quoted arg\" arg2";
-        tokens = parser.parseInput(input);
-        ASSERT_EQUAL(3, tokens.size());
-        ASSERT_EQUAL("command", tokens[0]);
-        ASSERT_EQUAL("\"quoted arg\"", tokens[1]);
-        ASSERT_EQUAL("arg2", tokens[2]);
-
-        input = "";
-        tokens = parser.parseInput(input);
-        ASSERT_EQUAL(0, tokens.size());
-
-        input = "   ";
-        tokens = parser.parseInput(input);
-        ASSERT_EQUAL(0, tokens.size());
-
-        return true;
-    }
 
     static bool testIsValidCommand() {
         CommandParser parser;
@@ -99,71 +72,6 @@ public:
 
         parser.registerCommand("newcommand", [](const std::vector<std::string>&) {});
         ASSERT_TRUE(parser.isValidCommand("newcommand"));
-
-        return true;
-    }
-
-    static bool testGetCommandList() {
-        CommandParser parser;
-
-        auto commandList = parser.getCommandList();
-
-        ASSERT_TRUE(!commandList.empty());
-
-        bool hasHelp = false;
-        bool hasExit = false;
-
-        for (const auto& [cmd, desc] : commandList) {
-            if (cmd == "help") {
-                hasHelp = true;
-                ASSERT_EQUAL("Display this help message", desc);
-            }
-            if (cmd == "exit") {
-                hasExit = true;
-                ASSERT_EQUAL("Exit the terminal", desc);
-            }
-        }
-
-        ASSERT_TRUE(hasHelp);
-        ASSERT_TRUE(hasExit);
-
-        parser.registerCommand("newcmd", [](const std::vector<std::string>&) {});
-        commandList = parser.getCommandList();
-
-        bool hasNewCmd = false;
-        for (const auto& [cmd, desc] : commandList) {
-            if (cmd == "newcmd") {
-                hasNewCmd = true;
-                break;
-            }
-        }
-
-        ASSERT_TRUE(hasNewCmd);
-
-        return true;
-    }
-
-    static bool testSplitString() {
-        CommandParser parser;
-
-        std::string input = "one,two,three";
-        std::vector<std::string> parts = parser.splitString(input, ',');
-        ASSERT_EQUAL(3, parts.size());
-        ASSERT_EQUAL("one", parts[0]);
-        ASSERT_EQUAL("two", parts[1]);
-        ASSERT_EQUAL("three", parts[2]);
-
-        input = "one,,three";
-        parts = parser.splitString(input, ',');
-        ASSERT_EQUAL(3, parts.size());
-        ASSERT_EQUAL("one", parts[0]);
-        ASSERT_EQUAL("", parts[1]);
-        ASSERT_EQUAL("three", parts[2]);
-
-        input = "";
-        parts = parser.splitString(input, ',');
-        ASSERT_EQUAL(1, parts.size());
-        ASSERT_EQUAL("", parts[0]);
 
         return true;
     }

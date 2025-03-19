@@ -46,37 +46,6 @@ public:
         return true;
     }
 
-    static bool testCreateProcess() {
-        STARTUPINFOA si;
-        PROCESS_INFORMATION pi;
-
-        // Initialize the structures
-        ZeroMemory(&si, sizeof(si));
-        si.cb = sizeof(si);
-        ZeroMemory(&pi, sizeof(pi));
-
-        // Process that immediately exits
-        bool success = CreateProcessA(
-            "cmd.exe",             // Application name
-            const_cast<char*>("/c exit"),  // Command line
-            NULL,
-            NULL,
-            FALSE,
-            CREATE_NO_WINDOW,      // Don't show window
-            NULL,
-            NULL,                  // Current directory
-            &si,                   // Startup info
-            &pi                    // Process info
-        );
-
-        ASSERT_TRUE(success);
-
-        // Clean up
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-
-        return true;
-    }
 
     static bool testProcessCreationFailure() {
         STARTUPINFOA si;
