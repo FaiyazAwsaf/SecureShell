@@ -15,7 +15,7 @@ PasswordStorage::PasswordStorage(const std::string& dataDir)
 bool PasswordStorage::loadMasterPassword(std::string& masterPasswordHash, std::string& masterSalt) const {
     std::ifstream masterFile(this->masterFile);
     if (!masterFile.is_open()) {
-        return false; // File doesn't exist or can't be opened
+        return false;
     }
     
     std::string storedHash, storedSalt;
@@ -135,4 +135,4 @@ bool PasswordStorage::savePasswords(
     return success;
 }
 
-} // namespace passman
+}

@@ -1,7 +1,7 @@
 #include "terminal/Terminal.h"
 #include "utils/Utils.h"
 #include "passman/PasswordManager.h"
-#include "terminal/CommandImplementation.h"  // Add this include
+#include "terminal/CommandImplementation.h"
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
@@ -41,14 +41,14 @@ void Terminal::start() {
         while ((ch = _getch()) != '\r') {
             if (ch == -32 || ch == 0) {
     // Fixed input handling to properly manage arrow keys
-                _getch();  // Read and discard the second byte
-                continue;  // Skip processing this special key
+                _getch();
+                continue;
             }
 
-            if (ch == '\b') { // Handle backspace
+            if (ch == '\b') {
                 if (!input.empty()) {
                     input.pop_back();
-                    std::cout << "\b \b"; // Move cursor back, overwrite with space, move back again
+                    std::cout << "\b \b";
                 }
             } else {
                 input += ch;
@@ -62,12 +62,12 @@ void Terminal::start() {
                 }
 
                 if (isCommand) {
-                    setConsoleColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY); // Blue for commands
+                    setConsoleColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
                 } else {
-                    setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // Default color
+                    setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
                 }
 
-                std::cout << ch; // Print the character
+                std::cout << ch;
             }
         }
 
