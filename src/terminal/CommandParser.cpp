@@ -93,6 +93,7 @@ void CommandParser::initializeDefaultCommands() {
         {"perm", "Display file permissions"},
         {"curr", "Show current working directory"},
         {"cat", "Display contents of a file"},
+        {"write", "Writes to a file"},
         {"grep", "Search for a pattern in a file"},
         {"head", "Display first lines of a file"},
         {"tree", "Display directory structure as a tree"},
