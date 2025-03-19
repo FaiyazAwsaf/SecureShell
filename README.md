@@ -32,15 +32,12 @@ SecureShell Terminal was born out of our interest for cybersecurity and the desi
 
 - Commands to retrieve system information (CPU, memory, OS details).
 
-### Custom Commands:
+### Additional Commands:
 
 - Support for custom commands like grep, cat, head, tree, and find.
 
 - Compile and run code files directly from the terminal.
 
-### Cross-Platform Support:
-
-- Designed to work on both Windows and Unix-based systems.
 
 # Installation
 To run SecureShell Terminal on your local machine, follow these steps:
