@@ -31,6 +31,7 @@ int main(){
     masterSuite.addTest("Execute Command Test", CommandParserTest::testExecuteCommand);
     masterSuite.addTest("Execute Command With Exception Test", CommandParserTest::testExecuteCommandWithException);
     masterSuite.addTest("Is Valid Command Test", CommandParserTest::testIsValidCommand);
+    masterSuite.addTest("Get Command List Test", CommandParserTest::testGetCommandList);
     masterSuite.addTest("Initialize Default Commands Test", CommandParserTest::testInitializeDefaultCommands);
 
     masterSuite.addTest("Terminal Running State Test", TerminalTest::testTerminalRunningState);
