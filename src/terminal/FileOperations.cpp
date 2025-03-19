@@ -449,7 +449,6 @@ void FileOperations::stat(const std::vector<std::string>& args) {
         std::cout << "Type: " << (std::filesystem::is_directory(filename) ? "Directory" : 
                                  std::filesystem::is_regular_file(filename) ? "Regular File" : "Other") << "\n";
         
-        // Display permissions
         std::cout << "Permissions: ";
         display_permission(std::vector<std::string>{filename});
     } catch (const std::exception& e) {
