@@ -85,13 +85,43 @@ On Unix-based systems:
 
 ### 1.File Management:
 
-- Use commands like ls, cd, copy, move, and remove to manage files and directories.
-- Example:
+- ##### List Directory Contents:
+Use the ls command to list files and directories in the current folder.
 
+ ```bash
+  ls /path/to/directory
+  ```
+- ##### Change Directory:
+Use the cd command to navigate to a different directory.
 ```bash
-ls /path/to/directory
+cd /path/to/directory
+```
+
+- ##### Create a Directory:
+Use the dcreate command to create a new directory.
+```bash
+dcreate new_directory
+```
+- ##### Copy Files:
+Use the copy command to copy a file from one location to another.
+```bash
 copy source.txt destination.txt
 ```
+
+- ##### Move Files:
+Use the move command to move a file to a new location.
+
+ ```bash
+move source.txt /new/location/
+ ```
+- ##### Remove Files or Directories:
+Use the remove command to delete a file or directory.
+
+ ```bash
+remove file.txt
+remove directory/
+```
+
 
 ### 2.Encryption and Decryption:
 
@@ -107,14 +137,13 @@ decrypt output.enc decrypted.txt mypassword
 ```  
 
 ### 3.Password Manager :
+##### - Access the Password Manager:
+Use the passman command to access the password manager.
 
-- Access the password manager using the passman command.
-- Add, retrieve, update, and remove passwords for various services.
 
 ```bash
 passman
 ```
-Follow the on-screen instructions to manage your passwords.
 
 ### 4.System Information:
 
@@ -167,7 +196,7 @@ This project was developed by:
 - [Md. Sadman Mubasshir Khan](https://github.com/mksadman)
 - [Nanziba Razin Samita](https://github.com/NanzibaSamita)
 
-zThis project was developed by us for the Software Project Lab 1 (SWE 4301) during the 3rd semester at the Islamic University of Technology(IUT).
+This project was developed by us for the Software Project Lab 1 (SWE 4301) during the 3rd semester at the Islamic University of Technology(IUT).
 
 # Supervised by
 
