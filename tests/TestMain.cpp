@@ -40,7 +40,6 @@ int main(){
     masterSuite.addTest("Get Available Drive Test", LauncherTest::testGetAvailableDrive);
     masterSuite.addTest("Process Creation Failure Test", LauncherTest::testProcessCreationFailure);
 
-    // File Encryption Tests
     masterSuite.addTest("Encrypt Decrypt File Test", FileEncryptionTest::testEncryptDecryptFile);
     masterSuite.addTest("Encrypt Decrypt With Wrong Password Test", FileEncryptionTest::testEncryptDecryptWithWrongPassword);
     masterSuite.runAll();
