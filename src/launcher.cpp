@@ -3,7 +3,6 @@
 #include <iostream>
 #include <filesystem>
 
-// Function to set console text color
 void setConsoleColor(WORD color) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, color);
@@ -16,12 +15,10 @@ std::string getAvailableDrive() {
             return drive;
         }
     }
-    return "C:\\"; // Default to C:\ if none are available
+    return "C:\\";
 }
 
 int main() {
-
-    // Create process information structures
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
 
@@ -30,19 +27,16 @@ int main() {
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
 
-
-
     setConsoleColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     std::cout << "-------------   Welcome to SecureShell Terminal   -------------\n\n";
     std::cout << "Type 'help' for a list of available commands.\n\n";
-
 
     setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
     std::string workingDirectory = getAvailableDrive();
 
     if (!CreateProcessA(
-        "SecureShell.exe",         // Application name
+        "SecureShell.exe",
         NULL,
         NULL,
         NULL,

@@ -8,7 +8,6 @@ CommandParser::CommandParser() {
     initializeDefaultCommands();
 }
 
-    // Removed unnecessary empty descriptions for commands
 void CommandParser::registerCommand(const std::string& command, CommandFunction handler) {
     commands[command] = handler;
     

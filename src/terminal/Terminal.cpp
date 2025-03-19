@@ -32,15 +32,12 @@ void Terminal::start() {
     setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
     while (running) {
-    // Modified prompt display for shell mode compatibility
         displayPrompt();
 
         std::string input;
         char ch;
-    // Fixed input handling to properly manage arrow keys
         while ((ch = _getch()) != '\r') {
             if (ch == -32 || ch == 0) {
-    // Fixed input handling to properly manage arrow keys
                 _getch();
                 continue;
             }
@@ -120,7 +117,7 @@ void Terminal::initializeCommands() {
     commandParser->registerCommand("curr", [this](const auto& args) { commandImpl->get_current_directory(args); });
     commandParser->registerCommand("encrypt", [this](const auto& args) { commandImpl->encrypt(args); });
     commandParser->registerCommand("decrypt", [this](const auto& args) { commandImpl->decrypt(args); });
-	commandParser->registerCommand("cat", [this](const auto& args) { commandImpl->cat(args); });
+	  commandParser->registerCommand("cat", [this](const auto& args) { commandImpl->cat(args); });
     commandParser->registerCommand("grep", [this](const auto& args) { commandImpl->grep(args); });
     commandParser->registerCommand("head", [this](const auto& args) { commandImpl->head(args); });
     commandParser->registerCommand("tree", [this](const auto& args) { commandImpl->tree(args); });
@@ -129,7 +126,6 @@ void Terminal::initializeCommands() {
     commandParser->registerCommand("stat", [this](const auto& args){ commandImpl->stat(args);});
 }
 
-    // Modified prompt display for shell mode compatibility
 void Terminal::displayPrompt() const {
     std::cout << std::filesystem::current_path().string() << "> ";
 }

@@ -6,6 +6,8 @@
 #include <unordered_map>
 
 class CommandParser {
+    friend class
+    CommandParserTest;
 public:
     using CommandFunction = std::function<void(const std::vector<std::string>&)>;
 
