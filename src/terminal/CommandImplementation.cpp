@@ -57,7 +57,7 @@ void CommandImplementation::encrypt(const std::vector<std::string>& args) {
     }
 
     FileEncryption fileEncryptor;
-    if (fileEncryptor.encryptFile(inputFile, password, outputFile)) {
+    if (fileEncryptor.encryptFile(inputFile, outputFile, password)) {
         std::cout << "File encrypted successfully and saved to '" << outputFile << "'.\n";
     } else {
         std::cout << "Failed to encrypt the file.\n";
