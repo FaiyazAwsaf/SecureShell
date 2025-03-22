@@ -30,17 +30,12 @@ add_library(utils_lib
     src/utils/UtilsHelpers.cpp
 )
 
-add_library(config_lib
-    src/config/ConfigManager.cpp
-)
-
 # Link libraries dependencies
 target_link_libraries(terminal_lib
     PRIVATE
     encryption_lib
     passman_lib
     utils_lib
-    config_lib
 )
 
 # Include directories for libraries
@@ -48,7 +43,6 @@ target_include_directories(terminal_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inclu
 target_include_directories(encryption_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(passman_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(utils_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_include_directories(config_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Add main executable
 add_executable(SecureShell src/main.cpp)
@@ -60,7 +54,6 @@ target_link_libraries(SecureShell
     encryption_lib
     passman_lib
     utils_lib
-    config_lib
 )
 
 # Add launcher application
@@ -80,7 +73,6 @@ target_link_libraries(command_tests
     encryption_lib
     passman_lib
     utils_lib
-    config_lib
 )
 
 # Include directories for test
@@ -94,8 +86,3 @@ target_include_directories(command_tests
 set_target_properties(SecureShell SecureShellLauncher command_tests PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
-
-# Copy configuration file
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/terminal_config.txt
-               ${CMAKE_BINARY_DIR}/bin/terminal_config.txt
-               COPYONLY)

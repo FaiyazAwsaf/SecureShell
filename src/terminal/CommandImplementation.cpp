@@ -159,7 +159,7 @@ void CommandImplementation::compileAndRun(const std::string& filename) {
             command = "java " + className;
             std::cout << "Running Java class: " << command << "\n";
             system(command.c_str());
-            return; // Return early as we've already executed
+            return;
         }
     }
     else if (ext == ".py") {

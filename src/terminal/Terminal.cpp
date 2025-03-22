@@ -25,11 +25,14 @@ Terminal::~Terminal() = default;
 void Terminal::start() {
     running = true;
 
-    setConsoleColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    std::cout << "-------------Welcome to SecureShell Terminal!-------------\n\n";
-    std::cout << "Type 'help' for a list of available commands.\n\n";
+    setConsoleColor(FOREGROUND_GREEN);
+    std::cout << "--------------------------------------------------------------------\n\n";
+    std::cout << "                  Welcome to SecureShell Terminal!                  \n\n";
+    std::cout << "--------------------------------------------------------------------\n\n";
 
     setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+    std::cout << "Type 'help' for a list of available commands.\n\n";
 
     while (running) {
         displayPrompt();
@@ -128,7 +131,11 @@ void Terminal::initializeCommands() {
 }
 
 void Terminal::displayPrompt() const {
-    std::cout << std::filesystem::current_path().string() << "> ";
+    setConsoleColor(FOREGROUND_GREEN | FOREGROUND_RED);
+    std::cout << std::filesystem::current_path().string();
+    std::cout << "> ";
+    setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
 }
 
 void Terminal::executeCommand(const std::string& command, const std::vector<std::string>& args) {
