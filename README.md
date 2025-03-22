@@ -13,6 +13,13 @@ SecureShell Terminal was born out of our interest for cybersecurity and the desi
 - List directory contents and display file permissions.
 
 - Navigate through directories using the cd command.
+
+ 
+ ### Compile and Run Code:
+
+- Compile and run code files directly from the terminal with a single command called 'run'.
+- Languages: C, C++, Python, Java, JavaScript and Rust
+
   
  ### Encryption and Decryption:
 
@@ -28,15 +35,11 @@ SecureShell Terminal was born out of our interest for cybersecurity and the desi
 
 - Password generation and management for various services.
 
-### System Information:
-
-- Commands to retrieve system information (CPU, memory, OS details).
-
 ### Additional Commands:
 
 - Support for custom commands like grep, cat, head, tree, and find.
 
-- Compile and run code files directly from the terminal.
+
 
 
 # Installation
@@ -203,3 +206,75 @@ Department of Computer Science and Engineering
 Islamic University of Technology
 
 
+Here’s the refined version with **Key Features** and **Main Features** merged:
+
+Key Features
+============
+
+### File and Directory Management:
+
+*   Create, copy, move, rename, and delete files and directories.
+    
+*   List directory contents and display file permissions.
+    
+*   Navigate through directories using the cd command.
+    
+
+#### Example Commands:
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`ls /path/to/directory   # List contents of a directory    cd /path/to/directory   # Change directory    dcreate new_directory   # Create a new directory    copy source.txt destination.txt   # Copy files    move source.txt /new/location/   # Move files    remove file.txt   # Remove files    remove directory/   # Remove directories`  
+
+### Compile and Run Code:
+
+*   Compile and execute code files directly from the terminal using the run command.
+    
+*   Supports multiple languages: **C, C++, Python, Java, JavaScript, and Rust**.
+    
+
+#### Example:
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   run program.cpp   `
+
+### Encryption and Decryption:
+
+*   Secure file encryption and decryption using **custom algorithms**.
+    
+*   Password-based encryption for sensitive files.
+    
+
+#### Example:
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`encrypt input.txt output.enc mypassword   # Encrypt a file    decrypt output.enc decrypted.txt mypassword   # Decrypt a file`  
+
+### Password Manager:
+
+*   Secure storage and retrieval of passwords.
+    
+*   Master password protection with **strong password validation**.
+    
+*   Generate and manage passwords for different services.
+    
+
+#### Example:
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`passman   # Access the password manager`  
+
+### System Information:
+
+*   Retrieve system details using the sysinfo command.
+    
+
+#### Example:
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`sysinfo`  
+
+### Advanced Commands:
+
+*   Support for **grep, cat, head, tree, find** for file operations.
+    
+
+#### Example:
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`grep "pattern" file.txt    cat file.txt`  
+
+This version keeps everything structured while merging related sections for clarity. Let me know if you want any refinements! 🚀
