@@ -121,26 +121,14 @@ cd build
 
 ### 3. Generate Build Files with CMake
 
-For MinGW:
 ```bash
 cmake -G "MinGW Makefiles" ..
 ```
 
-For Visual Studio:
-```bash
-cmake -G "Visual Studio 17 2022" ..
-```
-
 ### 4. Build the Project
 
-For MinGW:
 ```bash
 mingw32-make
-```
-
-For Visual Studio:
-```bash
-cmake --build . --config Release
 ```
 
 ### 5. Run the Application
