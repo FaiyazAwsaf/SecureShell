@@ -103,39 +103,54 @@ cd SecureShell-Terminal
 
 ```
 
-### 3. Build the Project
+### 1. Clone or Download the Repository
+
+```bash
+git clone https://github.com/your-username/SecureShell.git
+cd SecureShell
+```
+
+Alternatively, download and extract the source code ZIP file.
+
+### 2. Create a Build Directory
 
 ```bash
 mkdir build
 cd build
-cmake ..
-make
 ```
 
-### 4. Run the Application:
+### 3. Generate Build Files with CMake
 
-On Windows
+For MinGW:
+```bash
+cmake -G "MinGW Makefiles" ..
+```
+
+For Visual Studio:
+```bash
+cmake -G "Visual Studio 17 2022" ..
+```
+
+### 4. Build the Project
+
+For MinGW:
+```bash
+mingw32-make
+```
+
+For Visual Studio:
+```bash
+cmake --build . --config Release
+```
+
+### 5. Run the Application
+
+The compiled executable will be in the `bin` directory inside your build folder:
 
 ```bash
+cd bin
 SecureShell.exe
 ```
-
-#Usage
-
-## Main Features
-
-
-
-
-### 4.System Information:
-
-Retrieve system information using the sysinfo command:
-
-```bash
-sysinfo
-```
-
-
 
 # Tools and Technologies
 - Programming Language: C++
