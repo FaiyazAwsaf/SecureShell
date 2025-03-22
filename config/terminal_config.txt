@@ -1,7 +1,7 @@
 # Terminal Configuration Settings
 
 # Display Settings
-PROMPT_COLOR=cyan
+PROMPT_COLOR=red
 OUTPUT_COLOR=white
 ERROR_COLOR=red
 WARNING_COLOR=yellow

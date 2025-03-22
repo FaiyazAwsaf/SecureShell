@@ -59,7 +59,7 @@ void Terminal::start() {
                 }
 
                 if (isCommand) {
-                    setConsoleColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+                    setConsoleColor(FOREGROUND_BLUE | FOREGROUND_GREEN);
                 } else {
                     setConsoleColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
                 }
