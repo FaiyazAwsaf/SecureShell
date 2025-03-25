@@ -1,5 +1,5 @@
 # SecureShell
-Welcome to SecureShell, a command-line application developed in C++ using modern C++ libraries. This application enables users to efficiently navigate the Windows file system, execute cmd-let operations, and file encryption and decryption. It also supports multi-language program compilation with a single command and users can secure sensitive data with built-in password management functionalities.
+Welcome to SecureShell, a command-line application that enables users to efficiently navigate the Windows file system, execute cmd-let operations, and file encryption and decryption. It also supports multi-language program compilation with a single command and users can secure sensitive data with built-in password management functionalities.
 
 # Key Features
 
